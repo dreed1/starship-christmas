@@ -1,40 +1,134 @@
 (function() {
 
-  /*** ASTEROID CLASS ***/
+  /*********************************************************************************/
+  /********************************ASTEROID MODEL**************************************/
+  /*********************************************************************************/
 
-  this.Asteroid = function(initialVelocityX, initialVelocityY, xOrigin, yOrigin) {
-    this.asteroidImageReady = false;
-    this.asteroidImage = new Image();
-    this.asteroidImage.onload = function() {
-      this.asteroidImageReady = true;
+  this.Asteroid = function(opts) {
+    this.asteroidLargeImageReady = false;
+    this.asteroidLargeImage = new Image();
+    this.asteroidLargeImage.onload = function() {
+      this.asteroidLargeImageReady = true;
     };
-    this.asteroidImage.src = "assets/asteroid_L.png";
+    this.asteroidLargeImage.src = "assets/asteroid_L.png";
 
-    this.imageHeight = 64;
-    this.imageWidth = 64;
+    this.asteroidMediumImageReady = false;
+    this.asteroidMediumImage = new Image();
+    this.asteroidMediumImage.onload = function() {
+      this.asteroidMediumImageReady = true;
+    };
+    this.asteroidMediumImage.src = "assets/asteroid_M.png";
 
-    this.originX = xOrigin;
-    this.originY = yOrigin;
+    this.asteroidSmallImageReady = false;
+    this.asteroidSmallImage = new Image();
+    this.asteroidSmallImage.onload = function() {
+      this.asteroidSmallImageReady = true;
+    };
+    this.asteroidSmallImage.src = "assets/asteroid_S.png";
 
-    this.velocityX = initialVelocityX;
-    this.velocityY = initialVelocityY;
-  }
+    var self = this;
 
-  Asteroid.prototype.move = function() {
-    this.originX += this.velocityX;
-    this.originY += this.velocityY;
-    var gameWidth = document.body.clientWidth;
-    var gameHeight = document.body.clientHeight;
-    var offTheScreen = false; 
-    if(this.originY + this.imageHeight > gameHeight) offTheScreen = true;
-    if(this.originX < 0) offTheScreen = true;
-    if(this.originY < 0) offTheScreen = true;
-    //kill it if we're above the fold
-    return offTheScreen;
-  }
+    this.sizeInfoHash = {
+      "L": {
+        "minChildren": 2,
+        "maxChildren" : 4,
+        "childSize" : "M",
+        "icon": self.asteroidLargeImage,
+        "imageHeight": 80,
+        "imageWidth": 80
+      },
+      "M": {
+        "minChildren": 1,
+        "maxChildren" : 3,
+        "childSize" : "S",
+        "icon": self.asteroidMediumImage,
+        "imageHeight": 48,
+        "imageWidth": 32
+      },
+      "S": {
+        "minChildren": 0,
+        "maxChildren" : 0,
+        "childSize" : "S",
+        "icon": self.asteroidSmallImage,
+        "imageHeight": 24,
+        "imageWidth": 20
+      }
+    }
 
-  Asteroid.prototype.draw = function(context) {
-    context.drawImage(this.asteroidImage, this.originX, this.originY, this.imageWidth, this.imageHeight);
+    $.extend(this, {
+      size: "L",
+      velocity: 3 + Math.floor(Math.random() * 4),
+      angle: 270, //angle of velocity
+      orientation: Math.floor(Math.random()*360), //directional orientation
+      originX: Math.floor(Math.random()* 600),
+      originY: Math.floor(Math.random()* 800),
+      imageWidth: 80,
+      imageHeight: 80,
+      rotation: 3 - Math.floor(Math.random()*7)
+    },opts);
+
+    console.log(this.angle)
+
+    this.init = function() {
+      self.speedX = self.velocity * Math.cos(self.angle* Math.PI / 180);
+      self.speedY = self.velocity * Math.sin(self.angle* Math.PI / 180);
+    }
+
+    this.move = function() {      
+      self.originX += self.speedX;
+      self.originY += self.speedY;
+      self.orientation += self.rotation;
+
+      var gameWidth = document.body.clientWidth;
+      var gameHeight = document.body.clientHeight;
+
+      var offTheScreen = false; 
+      if(this.originY - this.imageHeight > gameHeight) offTheScreen = true;
+      if(this.originX + this.imageWidth < 0) offTheScreen = true;
+      if(this.originY + this.imageHeight < 0) offTheScreen = true;
+      //kill it if we're above the fold
+      return offTheScreen;
+    }
+
+    this.draw = function(context) {
+      var image = this.sizeInfoHash[this.size]["icon"];
+      this.drawRotatedImage(context, image, self.originX, self.originY, self.imageWidth, self.imageHeight, self.orientation);
+    }
+
+    this.drawRotatedImage = function(context, image, x, y, width, height, angle) {   
+      context.save(); 
+      context.translate(x+(width/2), y+(height/2));
+      context.rotate(angle * Math.PI/180);
+      context.drawImage(image, -(width/2), -(height/2), width, height);
+      context.restore(); 
+    }
+
+    this.createChildren = function(asteroidArray) {
+      var self = this;
+      var maxChildren = this.sizeInfoHash[this.size]["maxChildren"],
+        minChildren = this.sizeInfoHash[this.size]["minChildren"],
+        childSize = this.sizeInfoHash[this.size]["childSize"],
+        numChildren = minChildren + Math.floor(Math.random() * (maxChildren - minChildren)),
+        childWidth = this.sizeInfoHash[childSize]["imageWidth"],
+        childHeight = this.sizeInfoHash[childSize]["imageHeight"]
+        i = 0;
+
+      for(var i = 0; i < numChildren; i++ ) {
+        asteroidArray.push(
+          new Asteroid({
+            size: childSize,
+            originX: this.originX, 
+            originY: this.originY,
+            velocity: Math.random() * 4,
+            angle: (Math.random() * 360),
+            imageWidth: childWidth,
+            imageHeight: childHeight
+          })
+        );
+      }
+    }
+
+    self.init();
   }
 
   /*** Elf CLASS ***/
@@ -51,8 +145,6 @@
     this.imageHeight = 64;
     this.imageWidth = 32;
 
-    this.happy = false;
-
     this.originX = xOrigin;
     this.originY = yOrigin;
 
@@ -61,16 +153,16 @@
   }
 
   Elf.prototype.move = function() {
+    var offTheScreen = false; 
+    var gameWidth = document.body.clientWidth;
+    var gameHeight = document.body.clientHeight;
+    if((this.originY + this.imageHeight > gameHeight) || (this.originY < 0)) this.velocityY = -this.velocityY;
+
     this.originX += this.velocityX;
     this.originY += this.velocityY;
 
-    var gameWidth = document.body.clientWidth;
-    var gameHeight = document.body.clientHeight;
+    if(this.originX + this.imageWidth < 0) offTheScreen = true;
 
-    var offTheScreen = false; 
-    if(this.originY + this.imageHeight > gameHeight) offTheScreen = true;
-    if(this.originX < 0) offTheScreen = true;
-    if(this.originY < 0) offTheScreen = true;
     //kill it if we're above the fold
     return offTheScreen;
   }
@@ -237,8 +329,8 @@
     var offTheScreen = false; 
     if(this.originX + this.imageWidth > gameWidth) offTheScreen = true;
     if(this.originY + this.imageHeight > gameHeight) offTheScreen = true;
-    if(this.originX < 0) offTheScreen = true;
-    if(this.originY < 0) offTheScreen = true;
+    if(this.originX + this.imageWidth < 0) offTheScreen = true;
+    if(this.originY + this.imageHeight < 0) offTheScreen = true;
     //kill it if we're above the fold
     return offTheScreen;
   }
@@ -299,34 +391,18 @@
       menuBackgroundPosition1y: 0,
       menuBackgroundPosition2y: 0,
       menuBackgroundPosition3y: 0,
-      menuMidgroundPosition1x: 0,
-      menuMidgroundPosition2x: 0,
-      menuMidgroundPosition3x: 0,
-      menuMidgroundPosition1y: 100,
-      menuMidgroundPosition2y: 100,
-      menuMidgroundPosition3y: 100,
-      menuForegroundPosition1x: 0,
-      menuForegroundPosition2x: 0,
-      menuForegroundPosition3x: 0,
-      menuForegroundPosition1y: 600,
-      menuForegroundPosition2y: 600,
-      menuForegroundPosition3y: 600,
-      menuBackgroundVelocityx: -0.2,
-      menuMidgroundVelocityx: -1.2,
-      menuForegroundVelocityx: -10,
+      menuBackgroundVelocityx: -0.12,
       menuBackgroundVelocityy: 0,
-      menuMidgroundVelocityy: 0,
-      menuForegroundVelocityy: 0,
       menuBackgroundImageWidth: 0,
       menuBackgroundImageHeight: 0,
-      menuMidgroundImageWidth: 0,
-      menuMidgroundImageHeight: 0,
-      menuForegroundImageWidth: 0,
-      menuForegroundImageHeight: 0,
       logoPositionx: 0,
       logoPositiony: 0,
       logoWidth: 600,
-      logoHeight: 400
+      logoHeight: 400,
+      menuAsteroids: [],
+      menuElves: [],
+      menuNumElves: 5,
+      menuNumAsteroids: 10,
     }
 
     this.gameState = 0;
@@ -348,7 +424,7 @@
     this.elves = [];
     this.maxElves = 3;
     this.maxElfVelocityX = 18;
-    this.maxElfVelocityY = 0.1;
+    this.maxElfVelocityY = 98;
 
     this.leftPressed = false;
     this.rightPressed = false;
@@ -374,17 +450,9 @@
 
     this.menuInfo.menuBackgroundImageHeight = this.gameHeight;
     this.menuInfo.menuBackgroundImageWidth = this.gameWidth;
-    this.menuInfo.menuMidgroundImageHeight = this.gameHeight;
-    this.menuInfo.menuMidgroundImageWidth = this.gameWidth;
-    this.menuInfo.menuForegroundImageHeight = this.gameHeight/3;
-    this.menuInfo.menuForegroundImageWidth = this.gameWidth;
 
     this.menuInfo.menuBackgroundPosition2x = this.menuInfo.menuBackgroundImageWidth;
     this.menuInfo.menuBackgroundPosition3x = this.menuInfo.menuBackgroundImageWidth * 2;
-    this.menuInfo.menuMidgroundPosition2x = this.menuInfo.menuMidgroundImageWidth;
-    this.menuInfo.menuMidgroundPosition3x = this.menuInfo.menuMidgroundImageWidth * 2;
-    this.menuInfo.menuForegroundPosition2x = this.menuInfo.menuForegroundImageWidth;
-    this.menuInfo.menuForegroundPosition3x = this.menuInfo.menuForegroundImageWidth * 2;
 
     this.menuInfo.logoPositionx = this.gameWidth/2 - this.menuInfo.logoWidth/2;
     this.menuInfo.logoPositiony = this.gameHeight/2 - this.menuInfo.logoHeight/2 - 100;
@@ -447,31 +515,58 @@
     this.menuInfo.menuBackgroundPosition2y += this.menuInfo.menuBackgroundVelocityy;
     this.menuInfo.menuBackgroundPosition3y += this.menuInfo.menuBackgroundVelocityy;
 
+    while(this.menuInfo.menuElves.length < this.menuInfo.menuNumElves) {
+      this.menuInfo.menuElves.push(
+        new Elf()
+      );
+    }
+
+    while(this.menuInfo.menuAsteroids.length < this.menuInfo.menuNumAsteroids) {
+      var sizeArray = ["L", "M", "S"],
+        randomSize = Math.ceil(Math.random() * 3),
+        randomHeight = Math.random() * 100,
+        randomWidth = randomHeight * (0.5 + Math.random());
+      //this.printAllMenuAsteroids();
+      this.menuInfo.menuAsteroids.push(
+        new Asteroid({
+          size: sizeArray[randomSize],
+          imageHeight: randomHeight,
+          imageWidth: randomWidth,
+          originX: this.gameWidth +  (Math.random() * 500), 
+          originY: Math.ceil(Math.random() * this.gameHeight),
+          velocity: 0.3 + (Math.random() * 5),
+          angle: 160 + Math.floor(Math.random() * 40)
+        })
+      );
+    }
+
+    var elvesToKill = [],
+      asteroidsToKill = [];
+
+    //move the elves, clear the ones we don't need
+    for(var i=0; i < this.menuInfo.menuElves.length; i++) {
+      var elf = this.menuInfo.menuElves[i];
+      if( elf.move() ) {
+        elvesToKill.push(i);
+      }
+    }
+    for(var i=0; i< elvesToKill.length; i++) {
+      this.menuInfo.menuElves.splice(elvesToKill[i],1);
+    }
+    //same for the asteroids
+    for(var i=0; i < this.menuInfo.menuAsteroids.length; i++) {
+      var asteroid = this.menuInfo.menuAsteroids[i];
+      if( asteroid.move() ) {
+        asteroidsToKill.push(i);
+      }
+    }
+    for(var i=0; i< asteroidsToKill.length; i++) {
+      this.menuInfo.menuAsteroids.splice(asteroidsToKill[i],1);
+    }
+
     if (this.menuInfo.menuBackgroundPosition1x < -this.gameWidth) this.menuInfo.menuBackgroundPosition1x = this.menuInfo.menuBackgroundPosition3x + this.gameWidth;
     if (this.menuInfo.menuBackgroundPosition2x < -this.gameWidth) this.menuInfo.menuBackgroundPosition2x = this.menuInfo.menuBackgroundPosition1x + this.gameWidth;
     if (this.menuInfo.menuBackgroundPosition3x < -this.gameWidth) this.menuInfo.menuBackgroundPosition3x = this.menuInfo.menuBackgroundPosition2x + this.gameWidth;
-
-    this.menuInfo.menuMidgroundPosition1x += this.menuInfo.menuMidgroundVelocityx;
-    this.menuInfo.menuMidgroundPosition2x += this.menuInfo.menuMidgroundVelocityx;
-    this.menuInfo.menuMidgroundPosition3x += this.menuInfo.menuMidgroundVelocityx;
-    this.menuInfo.menuMidgroundPosition1y += this.menuInfo.menuMidgroundVelocityy;
-    this.menuInfo.menuMidgroundPosition2y += this.menuInfo.menuMidgroundVelocityy;
-    this.menuInfo.menuMidgroundPosition3y += this.menuInfo.menuMidgroundVelocityy;
-
-    if (this.menuInfo.menuMidgroundPosition1x < -this.gameWidth) this.menuInfo.menuMidgroundPosition1x = this.menuInfo.menuMidgroundPosition3x + this.gameWidth;
-    if (this.menuInfo.menuMidgroundPosition2x < -this.gameWidth) this.menuInfo.menuMidgroundPosition2x = this.menuInfo.menuMidgroundPosition1x + this.gameWidth;
-    if (this.menuInfo.menuMidgroundPosition3x < -this.gameWidth) this.menuInfo.menuMidgroundPosition3x = this.menuInfo.menuMidgroundPosition2x + this.gameWidth;
-
-    this.menuInfo.menuForegroundPosition1x += this.menuInfo.menuForegroundVelocityx;
-    this.menuInfo.menuForegroundPosition2x += this.menuInfo.menuForegroundVelocityx;
-    this.menuInfo.menuForegroundPosition3x += this.menuInfo.menuForegroundVelocityx;
-    this.menuInfo.menuForegroundPosition1y += this.menuInfo.menuForegroundVelocityy;
-    this.menuInfo.menuForegroundPosition2y += this.menuInfo.menuForegroundVelocityy;
-    this.menuInfo.menuForegroundPosition3y += this.menuInfo.menuForegroundVelocityy;
-
-    if (this.menuInfo.menuForegroundPosition1x < -this.gameWidth) this.menuInfo.menuForegroundPosition1x = this.menuInfo.menuForegroundPosition3x + this.gameWidth;
-    if (this.menuInfo.menuForegroundPosition2x < -this.gameWidth) this.menuInfo.menuForegroundPosition2x = this.menuInfo.menuForegroundPosition1x + this.gameWidth;
-    if (this.menuInfo.menuForegroundPosition3x < -this.gameWidth) this.menuInfo.menuForegroundPosition3x = this.menuInfo.menuForegroundPosition2x + this.gameWidth;
 
     if( this.spacePressed) {
       //createjs.Sound.play("BeginDing");
@@ -487,20 +582,33 @@
     }
   }
 
+  Game.prototype.printAllMenuAsteroids = function() {
+    console.log('printing')
+    for (var i=0; i< this.menuInfo.menuAsteroids.length; i++) {
+      var asteroid = this.menuInfo.menuAsteroids[i];
+      console.log(asteroid.originX, asteroid.originY, asteroid.velocity, asteroid.angle)
+    }
+    console.log('done')
+  }
+
   Game.prototype.drawMenu = function() {
 
-    this.context.drawImage(this.bkgdImage3, this.menuInfo.menuBackgroundPosition1x, this.menuInfo.menuBackgroundPosition1y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
-    this.context.drawImage(this.bkgdImage3, this.menuInfo.menuBackgroundPosition2x, this.menuInfo.menuBackgroundPosition2y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
+    //draw the background
+    this.context.drawImage(this.bkgdImage1, this.menuInfo.menuBackgroundPosition1x, this.menuInfo.menuBackgroundPosition1y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
+    this.context.drawImage(this.bkgdImage2, this.menuInfo.menuBackgroundPosition2x, this.menuInfo.menuBackgroundPosition2y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
     this.context.drawImage(this.bkgdImage3, this.menuInfo.menuBackgroundPosition3x, this.menuInfo.menuBackgroundPosition3y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
 
-    this.context.drawImage(this.bkgdImage2, this.menuInfo.menuMidgroundPosition1x, this.menuInfo.menuMidgroundPosition1y, this.menuInfo.menuMidgroundImageWidth, this.menuInfo.menuMidgroundImageHeight);
-    this.context.drawImage(this.bkgdImage2, this.menuInfo.menuMidgroundPosition2x, this.menuInfo.menuMidgroundPosition2y, this.menuInfo.menuMidgroundImageWidth, this.menuInfo.menuMidgroundImageHeight);
-    this.context.drawImage(this.bkgdImage2, this.menuInfo.menuMidgroundPosition3x, this.menuInfo.menuMidgroundPosition3y, this.menuInfo.menuMidgroundImageWidth, this.menuInfo.menuMidgroundImageHeight);
+    //draw the elves and the asteroids
+    for(var i=0; i < this.menuInfo.menuElves.length; i++) {
+      var elf = this.menuInfo.menuElves[i];
+      elf.draw(this.context);
+    }
+    for(var i=0; i < this.menuInfo.menuAsteroids.length; i++) {
+      var asteroid = this.menuInfo.menuAsteroids[i];
+      asteroid.draw(this.context);
+    }
 
-    this.context.drawImage(this.bkgdImage1, this.menuInfo.menuForegroundPosition1x, this.menuInfo.menuForegroundPosition1y, this.menuInfo.menuForegroundImageWidth, this.menuInfo.menuForegroundImageHeight);
-    this.context.drawImage(this.bkgdImage1, this.menuInfo.menuForegroundPosition2x, this.menuInfo.menuForegroundPosition2y, this.menuInfo.menuForegroundImageWidth, this.menuInfo.menuForegroundImageHeight);
-    this.context.drawImage(this.bkgdImage1, this.menuInfo.menuForegroundPosition3x, this.menuInfo.menuForegroundPosition3y, this.menuInfo.menuForegroundImageWidth, this.menuInfo.menuForegroundImageHeight);
-
+    //draw the logo
     this.context.drawImage(this.menuLogo, this.menuInfo.logoPositionx, this.menuInfo.logoPositiony, this.menuInfo.logoWidth, this.menuInfo.logoHeight);
 
     this.context.fillStyle = "rgb(255, 255, 255)";
@@ -672,7 +780,8 @@
 
   Game.prototype.checkAsteroidCollisions = function() {
     var asteroidCullArray = [],
-        bulletCullArray = [];
+        bulletCullArray = [],
+        asteroidPregnantArray = [];
     for(var i = 0; i < this.asteroids.length; i++) {
       var asteroid = this.asteroids[i];
       if(this.collides(asteroid, this.player)) {
@@ -684,10 +793,14 @@
         var bullet = this.player.bullets[j];
         //if the bullet collides with the asteroid, we want to do something
         if(this.collides(asteroid,bullet)) {
+          asteroidPregnantArray.push(i);
           asteroidCullArray.push(i);
           bulletCullArray.push(j);
         }
       }
+    }
+    for(var i = 0; i < asteroidPregnantArray.length; i++) {
+      this.asteroids[asteroidPregnantArray[i]].createChildren(this.asteroids);
     }
     for(var i = 0; i < asteroidCullArray.length; i++) {
       this.asteroids.splice(asteroidCullArray[i],1);
@@ -722,15 +835,14 @@
 
   Game.prototype.maintainAsteroids = function() {
     while(this.asteroids.length < this.maxAsteroids) {
-      var yVelocityPotential = Math.random() * this.maxAsteroidVelocityY;
       this.asteroids.push(
-        new Asteroid(
-          -Math.random(this.maxAsteroidVelocityX),
-          -this.maxAsteroidVelocityY + (Math.random() * this.maxAsteroidVelocityY),
-          this.gameWidth +  (Math.ceil(Math.random() * this.gameWidth)), 
-          (Math.ceil(Math.random() * this.gameHeight))
-        )
-      );
+        new Asteroid({
+          originX: this.gameWidth +  50, 
+          originY: Math.ceil(Math.random() * this.gameHeight),
+          velocity: 2 + (Math.random() * 4),
+          angle: 178 + Math.floor(Math.random() * 4)
+        })
+      )
     }
   }
 
