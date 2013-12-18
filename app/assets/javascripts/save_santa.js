@@ -762,7 +762,7 @@
       lifeWidth = 40,
       lifeHeight = 40;
 
-    this.context.fillStyle = "rgb(0, 0, 0)";
+    this.context.fillStyle = "rgb(255, 255, 255)";
     this.context.fonts = "14pt helvetica";
     this.context.fillText("SCORE:" + this.score, scorePositionX, scorePositionY);
     this.context.fillText("elves:" + this.player.elves, elvesPositionX, elvesPositionY);
@@ -915,7 +915,7 @@
   }
 
   Game.prototype.over = function() {
-    this.context.fillStyle = "rgb(0, 0, 0)";
+    this.context.fillStyle = "rgb(255, 255, 255)";
     this.context.fonts = "34pt helvetica";
     this.context.fillText("GAME OVER", this.gameWidth / 2, this.gameHeight / 2);
     //this.currentMusic.stop();
