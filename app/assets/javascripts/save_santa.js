@@ -458,9 +458,6 @@
     this.menuInfo.logoPositiony = this.gameHeight/2 - this.menuInfo.logoHeight/2 - 100;
 
     //this.initializeSound();
-    while(!this.bkgdImage1Ready) {
-
-    }
     this.bindEvents();
   }
 
