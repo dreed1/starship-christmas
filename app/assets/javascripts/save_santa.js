@@ -31,15 +31,15 @@
     this.sizeInfoHash = {
       "L": {
         "minChildren": 2,
-        "maxChildren" : 4,
+        "maxChildren" : 6,
         "childSize" : "M",
         "icon": self.asteroidLargeImage,
         "imageHeight": 80,
         "imageWidth": 80
       },
       "M": {
-        "minChildren": 1,
-        "maxChildren" : 3,
+        "minChildren": 0,
+        "maxChildren" : 5,
         "childSize" : "S",
         "icon": self.asteroidMediumImage,
         "imageHeight": 48,
@@ -108,7 +108,7 @@
       var maxChildren = this.sizeInfoHash[this.size]["maxChildren"],
         minChildren = this.sizeInfoHash[this.size]["minChildren"],
         childSize = this.sizeInfoHash[this.size]["childSize"],
-        numChildren = minChildren + Math.floor(Math.random() * (maxChildren - minChildren)),
+        numChildren = Math.max(minChildren, Math.floor(Math.random() * maxChildren)),
         childWidth = this.sizeInfoHash[childSize]["imageWidth"],
         childHeight = this.sizeInfoHash[childSize]["imageHeight"]
         i = 0;
