@@ -67,8 +67,6 @@
       rotation: 3 - Math.floor(Math.random()*7)
     },opts);
 
-    console.log(this.angle)
-
     this.init = function() {
       self.speedX = self.velocity * Math.cos(self.angle* Math.PI / 180);
       self.speedY = self.velocity * Math.sin(self.angle* Math.PI / 180);
@@ -131,9 +129,9 @@
     self.init();
   }
 
-  /*** Elf CLASS ***/
+  /*** ELF CLASS ***/
 
-  this.Elf = function(initialVelocityX, initialVelocityY, xOrigin, yOrigin) {
+  this.Elf = function(opts) {
     this.elfImageReady = false;
     this.elfImage = new Image();
     this.elfImage.onload = function() {
@@ -141,37 +139,56 @@
     };
     this.elfImage.src = "assets/elf.png";
 
+    $.extend(this, {
+      velocity: 3 + Math.floor(Math.random() * 4),
+      angle: 270, //angle of velocity
+      orientation: Math.floor(Math.random()*360), //directional orientation
+      originX: Math.floor(Math.random()* 600),
+      originY: Math.floor(Math.random()* 800),
+      imageWidth: 32,
+      imageHeight: 64,
+      rotation: 3 - Math.floor(Math.random()*7)
+    },opts);
 
-    this.imageHeight = 64;
-    this.imageWidth = 32;
-
-    this.originX = xOrigin;
-    this.originY = yOrigin;
-
-    this.velocityX = initialVelocityX;
-    this.velocityY = initialVelocityY;
+    this.init();
   }
 
-  Elf.prototype.move = function() {
-    var offTheScreen = false; 
+  Elf.prototype.init = function() {
+    this.speedX = this.velocity * Math.cos(this.angle* Math.PI / 180);
+    this.speedY = this.velocity * Math.sin(this.angle* Math.PI / 180);
+  }
+
+  Elf.prototype.move = function() {  
     var gameWidth = document.body.clientWidth;
-    var gameHeight = document.body.clientHeight;
-    if((this.originY + this.imageHeight > gameHeight) || (this.originY < 0)) this.velocityY = -this.velocityY;
+    var gameHeight = document.body.clientHeight;    
 
-    this.originX += this.velocityX;
-    this.originY += this.velocityY;
-
+    var offTheScreen = false; 
+    if(this.originY + this.imageHeight >= gameHeight) this.speedY = -this.speedY;
     if(this.originX + this.imageWidth < 0) offTheScreen = true;
+    if(this.originY <= 0) this.speedY = -this.speedY;
 
+    this.originX += this.speedX;
+    this.originY += this.speedY;
+    this.orientation += this.rotation;
+
+    
     //kill it if we're above the fold
     return offTheScreen;
   }
 
   Elf.prototype.draw = function(context) {
-    context.drawImage(this.elfImage, this.originX, this.originY, this.imageWidth, this.imageHeight);
+    this.drawRotatedImage(context, this.elfImage, this.originX, this.originY, this.imageWidth, this.imageHeight, this.orientation);
   }
 
-  /*** player CLASS ***/
+  Elf.prototype.drawRotatedImage = function(context, image, x, y, width, height, angle) {  
+    context.save(); 
+    context.translate(x+(width/2), y+(height/2));
+    context.rotate(angle * Math.PI/180);
+    context.drawImage(image, -(width/2), -(height/2), width, height);
+    context.restore(); 
+  }
+
+  /*** PLAYER CLASS ***/
 
   this.Player = function() {
     this.playerImageReady = false;
@@ -517,7 +534,12 @@
 
     while(this.menuInfo.menuElves.length < this.menuInfo.menuNumElves) {
       this.menuInfo.menuElves.push(
-        new Elf()
+        new Elf({
+          originX: this.gameWidth +  (Math.random() * 500), 
+          originY: Math.ceil(Math.random() * this.gameHeight),
+          velocity: 0.3 + (Math.random() * 5),
+          angle: 100 + Math.floor(Math.random() * 160)
+        })
       );
     }
 
@@ -849,12 +871,12 @@
   Game.prototype.maintainElves = function() {
     while(this.elves.length < this.maxElves) {
       this.elves.push( 
-        new Elf(
-          -Math.random(this.maxElfVelocityX),
-          -Math.random(this.maxElfVelocityY),
-          this.gameWidth + Math.ceil(Math.random() * this.gameWidth), 
-          (Math.ceil(Math.random() * this.gameHeight ))
-        )
+        new Elf({
+          originX: this.gameWidth +  (Math.ceil(Math.random() * this.gameWidth)), 
+          originY: Math.ceil(Math.random() * this.gameHeight),
+          velocity: 0.3 + (Math.random() * 5),
+          angle: 150 + Math.floor(Math.random() * 60)
+        })
       );
     }
   }
