@@ -2,7 +2,7 @@
   var Images = function(imagesLoadedCallback) {
     var _this = this;
       
-    this.totalImages = 15;
+    this.totalImages = 17;
     this.imagesReady = 0;
     this.completionCallback = imagesLoadedCallback;
 
@@ -125,6 +125,22 @@
       imageReady();
     };
     this.introTextImage2.src = "assets/intro_text_2.png";
+
+    this.instructionTextImage1 = new Image();
+    this.instructionTextImage1Ready = false;
+    this.instructionTextImage1.onload = function() {
+      instructionTextImage1Ready = true;
+      imageReady();
+    };
+    this.instructionTextImage1.src = "assets/instruction_text_1.png";
+
+    this.instructionTextImage2 = new Image();
+    this.instructionTextImage2Ready = false;
+    this.instructionTextImage2.onload = function() {
+      instructionTextImage2Ready = true;
+      imageReady();
+    };
+    this.instructionTextImage2.src = "assets/instruction_text_2.png";
 
     var imageReady = function() {
       _this.imagesReady++;
@@ -1095,7 +1111,58 @@
       height = document.body.clientHeight,
       rudolphImages = [gameImages.rudolphImage1, gameImages.rudolphImage2],
       textImages = [gameImages.introTextImage1, gameImages.introTextImage2];
-      console.log(gameImages);
+
+    var imagesArray = [
+      new AnimatedImage({
+        originX: width/2- 300/2,
+        originY: 50,
+        imageWidth: 300,
+        imageHeight: 300,
+        images:rudolphImages,
+        context: this.context,
+        imageDuration:300, //in ms
+        currentImageIndex: 0
+      }),
+      new AnimatedImage({
+        originX: width/2 - 928/2,
+        originY: 400,
+        imageWidth:928,
+        imageHeight: 225,
+        images:textImages,
+        context: this.context,
+        imageDuration:800, //in ms
+        currentImageIndex: 0
+      })
+    ]
+
+    this.cinematic = new Cinematic({
+      context:this.context,
+      images:imagesArray,
+      duration: 12000,
+      completionCallback:function(){ 
+        _this.playInstructionCinematic();
+      }
+    });
+
+    // do {
+
+    // } while (!imagesReady)
+
+    this.cinematic.play();
+
+    var imagesReady = function() {
+      return true;
+    }
+  }
+
+  Game.prototype.playInstructionCinematic = function() {
+    var _this = this;
+    this.gameState = 4;
+
+    var width = document.body.clientWidth,
+      height = document.body.clientHeight,
+      rudolphImages = [gameImages.rudolphImage1, gameImages.rudolphImage2],
+      textImages = [gameImages.instructionTextImage1, gameImages.instructionTextImage2];
 
     var imagesArray = [
       new AnimatedImage({
@@ -1186,22 +1253,22 @@
     game.initialize();
     var loopInterval = setInterval(function() {
       switch(game.gameState) {
-        case -1:
+        case -1: //images still loading
           game.loading();
           break;
-        case 0:
+        case 0: //main menu
           game.mainMenu();
           break;
-        case 1:
+        case 1: //gameplay
           game.play();
           break;
-        case 2:
+        case 2: // pause screen? idk, placeholder FOR NOTHING!
           break;
         case 4:
           //cinematic
           game.playCurrentCinematic();
           break;
-        case 3:
+        case 3: //game over
           game.over();
           clearInterval(loopInterval);
           break;
