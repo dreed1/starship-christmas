@@ -1188,6 +1188,7 @@
       switch(game.gameState) {
         case -1:
           game.loading();
+          break;
         case 0:
           game.mainMenu();
           break;
