@@ -2,9 +2,17 @@
   var Images = function(imagesLoadedCallback) {
     var _this = this;
       
-    this.totalImages = 14;
+    this.totalImages = 15;
     this.imagesReady = 0;
     this.completionCallback = imagesLoadedCallback;
+
+    this.loadingTextImage = new Image();
+    this.loadingTextImageReady = false;
+    this.loadingTextImage.onload = function() {
+      loadingTextImageReady = true;
+      imageReady();
+    };
+    this.loadingTextImage.src = "assets/loading_text.png";
 
     this.asteroidLargeImageReady = false;
     this.asteroidLargeImage = new Image();
@@ -1139,16 +1147,23 @@
   Game.prototype.loading = function() {
     var width = document.body.clientWidth,
       height = document.body.clientHeight;
-    this.context.fillStyle = this.fillColor;
+    this.context.fillStyle = 'black';
     this.context.rect(0, 0, width, height);
-    this.context.fill();
+    this.context.fill(),
+    loadingTextHeight = 225,
+    loadingTextWidth = 928,
+    loadingTextOriginX = width/2 - loadingTextWidth/2,
+    loadingTextOriginY = height/2 - loadingTextHeight/2;
 
-    this.loadingTextImage = new Image();
-    this.loadingTextImageReady = false;
-    this.loadingTextImage.onload = function() {
-      loadingTextImageReady = true;
-    };
-    this.loadingTextImage.src = "assets/loading_text.png";
+    
+    this.context.drawImage(
+      gameImages.loadingTextImage,
+      loadingTextOriginX,
+      loadingTextOriginY,
+      loadingTextWidth,
+      loadingTextHeight
+    );
+
   }
 
   Game.prototype.pause = function() {
@@ -1166,7 +1181,6 @@
   $(document).ready(function() {
     var game = new Game();
     gameImages = new Images(function() {
-      console.log('images are loaded');
       game.gameState = 0;
     });
     game.initialize();
