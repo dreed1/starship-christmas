@@ -2,7 +2,7 @@
   var Images = function(imagesLoadedCallback) {
     var _this = this;
       
-    this.totalImages = 17;
+    this.totalImages = 19;
     this.imagesReady = 0;
     this.completionCallback = imagesLoadedCallback;
 
@@ -141,6 +141,22 @@
       imageReady();
     };
     this.instructionTextImage2.src = "assets/instruction_text_2.png";
+
+    this.novawareImage1 = new Image();
+    this.novawareImage1Ready = false;
+    this.novawareImage1.onload = function() {
+      novawareImage1Ready = true;
+      imageReady();
+    };
+    this.novawareImage1.src = "assets/novaware_image_1.png";
+
+    this.novawareImage2 = new Image();
+    this.novawareImage2Ready = false;
+    this.novawareImage2.onload = function() {
+      novawareImage2Ready = true;
+      imageReady();
+    };
+    this.novawareImage2.src = "assets/novaware_image_2.png";
 
     var imageReady = function() {
       _this.imagesReady++;
@@ -1103,6 +1119,43 @@
     }
   }
 
+  Game.prototype.playNovawareCinematic = function() {
+    var _this = this;
+    this.gameState = 4;
+
+    var width = document.body.clientWidth,
+      height = document.body.clientHeight,
+      novawareImages = [gameImages.novawareImage1, gameImages.novawareImage2];
+
+    var imagesArray = [
+      new AnimatedImage({
+        originX: 0,
+        originY: 0,
+        imageWidth: width,
+        imageHeight: height,
+        images: novawareImages,
+        context: this.context,
+        imageDuration:250, //in ms
+        currentImageIndex: 0
+      })
+    ]
+
+    this.cinematic = new Cinematic({
+      context:this.context,
+      images:imagesArray,
+      duration: 7000,
+      completionCallback:function(){ 
+        _this.gameState = 0; 
+      }
+    });
+
+    this.cinematic.play();
+
+    var imagesReady = function() {
+      return true;
+    }
+  }
+
   Game.prototype.playIntroCinematic = function() {
     var _this = this;
     this.gameState = 4;
@@ -1196,10 +1249,6 @@
       }
     });
 
-    // do {
-
-    // } while (!imagesReady)
-
     this.cinematic.play();
 
     var imagesReady = function() {
@@ -1248,7 +1297,7 @@
   $(document).ready(function() {
     var game = new Game();
     gameImages = new Images(function() {
-      game.gameState = 0;
+      game.playNovawareCinematic();
     });
     game.initialize();
     var loopInterval = setInterval(function() {
