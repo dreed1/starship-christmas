@@ -1,14 +1,16 @@
 (function() {
+  var Images = function(imagesLoadedCallback) {
+    var _this = this;
+      
+    this.totalImages = 14;
+    this.imagesReady = 0;
+    this.completionCallback = imagesLoadedCallback;
 
-  /*********************************************************************************/
-  /********************************ASTEROID MODEL**************************************/
-  /*********************************************************************************/
-
-  this.Asteroid = function(opts) {
     this.asteroidLargeImageReady = false;
     this.asteroidLargeImage = new Image();
     this.asteroidLargeImage.onload = function() {
       this.asteroidLargeImageReady = true;
+      imageReady();
     };
     this.asteroidLargeImage.src = "assets/asteroid_L.png";
 
@@ -16,6 +18,7 @@
     this.asteroidMediumImage = new Image();
     this.asteroidMediumImage.onload = function() {
       this.asteroidMediumImageReady = true;
+      imageReady();
     };
     this.asteroidMediumImage.src = "assets/asteroid_M.png";
 
@@ -23,8 +26,200 @@
     this.asteroidSmallImage = new Image();
     this.asteroidSmallImage.onload = function() {
       this.asteroidSmallImageReady = true;
+      imageReady();
     };
     this.asteroidSmallImage.src = "assets/asteroid_S.png";
+
+    this.elfImageReady = false;
+    this.elfImage = new Image();
+    this.elfImage.onload = function() {
+      this.elfImageReady = true;
+      imageReady();
+    };
+    this.elfImage.src = "assets/elf.png";
+
+    this.playerImageReady = false;
+    this.playerImage = new Image();
+    this.playerImage.onload = function() {
+      this.playerImageReady = true;
+      imageReady();
+    };
+    this.playerImage.src = "assets/spaceship.png";
+
+    this.bulletImageReady = false;
+    this.bulletImage = new Image();
+    this.bulletImage.onload = function() {
+      this.bulletImageReady = true;
+      imageReady();
+    };
+    this.bulletImage.src = "assets/candy_cane.png";
+
+        this.bkgdImage1Ready = false;
+    this.bkgdImage1 = new Image();
+    this.bkgdImage1.onload = function() {
+      this.bkgdImage1Ready = true;
+      imageReady();
+    };
+    this.bkgdImage1.src = "assets/space_bkgd_1.png";
+
+    this.bkgdImage2Ready = false;
+    this.bkgdImage2 = new Image();
+    this.bkgdImage2.onload = function() {
+      this.bkgdImage2Ready = true;
+      imageReady();
+    };
+    this.bkgdImage2.src = "assets/space_bkgd_2.png";
+
+    this.bkgdImage3Ready = false;
+    this.bkgdImage3 = new Image();
+    this.bkgdImage3.onload = function() {
+      this.bkgdImage3Ready = true;
+      imageReady();
+    };
+    this.bkgdImage3.src = "assets/space_bkgd_3.png";
+
+    this.menuLogoReady = false;
+    this.menuLogo = new Image();
+    this.menuLogo.onload = function() {
+      this.menuLogoReady = true;
+      imageReady();
+    };
+    this.menuLogo.src = "assets/menu_logo.png";
+
+    this.rudolphImage1 = new Image();
+    this.rudolphImage1Ready = false;
+    this.rudolphImage1.onload = function() {
+      this.rudolphImage1Ready = true;
+      imageReady();
+    };
+    this.rudolphImage1.src = "assets/rudolph_1.png";
+
+    this.rudolphImage2 = new Image();
+    this.rudolphImage2Ready = false;
+    this.rudolphImage2.onload = function() {
+      this.rudolphImage2Ready = true;
+      imageReady();
+    };
+    this.rudolphImage2.src = "assets/rudolph_2.png";
+
+    this.introTextImage1 = new Image();
+    this.introTextImage1Ready = false;
+    this.introTextImage1.onload = function() {
+      introTextImage1Ready = true;
+      imageReady();
+    };
+    this.introTextImage1.src = "assets/intro_text_1.png";
+
+    this.introTextImage2 = new Image();
+    this.introTextImage2Ready = false;
+    this.introTextImage2.onload = function() {
+      introTextImage2Ready = true;
+      imageReady();
+    };
+    this.introTextImage2.src = "assets/intro_text_2.png";
+
+    var imageReady = function() {
+      _this.imagesReady++;
+      if(_this.imagesReady >= _this.totalImages) {
+        _this.completionCallback();
+      }
+    }
+
+  }
+
+  /*********************************************************************************/
+  /********************************ANIMATED IMAGE MODEL*****************************/
+  /*********************************************************************************/
+
+  this.AnimatedImage = function(opts) {
+    $.extend(this, {
+      originX: 0,
+      originY: 0,
+      imageWidth: 100,
+      imageHeight: 100,
+      images:[],
+      context: null,
+      imageDuration:25, //in ms
+      currentImageIndex: 0,
+    },opts);
+  }
+
+  AnimatedImage.prototype.reset = function() {
+    this.currentImageIndex = 0;
+    this.play();
+  }
+
+  AnimatedImage.prototype.play = function() {
+    var _this = this;
+    setTimeout(function() {
+      _this.nextImage();
+    }, this.imageDuration);
+  }
+
+  AnimatedImage.prototype.nextImage = function() {
+    var _this = this;
+    this.currentImageIndex++;
+    if(this.currentImageIndex < this.images.length) {
+      setTimeout(function() {
+        _this.nextImage();
+      }, this.imageDuration);
+    } 
+    else {
+      this.reset();
+    }
+  }
+
+  AnimatedImage.prototype.draw = function() {
+    this.context.drawImage(this.images[this.currentImageIndex], this.originX, this.originY, this.imageWidth, this.imageHeight);
+  }
+
+
+  /*********************************************************************************/
+  /********************************CINEMATIC MODEL**********************************/
+  /*********************************************************************************/
+
+  this.Cinematic = function(opts) {
+    $.extend(this, {
+      context:null,
+      images:[],
+      duration: 500,
+      fillColor: '#000',
+      completionCallback:function(){}
+    },opts);
+  }
+
+  Cinematic.prototype.play = function() {
+    var _this = this;
+    setTimeout(function() {
+      _this.completionCallback();
+    }, this.duration);
+    for(var i=0; i< this.images.length; i++) {
+      this.images[i].play(function() {
+        _this.images[i].play();
+      });
+    }
+  }
+
+  Cinematic.prototype.fillBackground = function() {
+    var width = document.body.clientWidth,
+      height = document.body.clientHeight;
+    this.context.fillStyle = this.fillColor;
+    this.context.rect(0, 0, width, height);
+    this.context.fill();
+  }
+
+  Cinematic.prototype.draw = function() {
+    this.fillBackground();
+    for(var i=0; i< this.images.length; i++) {
+      this.images[i].draw();
+    }
+  }
+
+  /*********************************************************************************/
+  /********************************ASTEROID MODEL**************************************/
+  /*********************************************************************************/
+
+  this.Asteroid = function(opts) {
 
     var self = this;
 
@@ -33,7 +228,7 @@
         "minChildren": 2,
         "maxChildren" : 6,
         "childSize" : "M",
-        "icon": self.asteroidLargeImage,
+        "icon": gameImages.asteroidLargeImage,
         "imageHeight": 80,
         "imageWidth": 80
       },
@@ -41,7 +236,7 @@
         "minChildren": 0,
         "maxChildren" : 5,
         "childSize" : "S",
-        "icon": self.asteroidMediumImage,
+        "icon": gameImages.asteroidMediumImage,
         "imageHeight": 48,
         "imageWidth": 32
       },
@@ -49,7 +244,7 @@
         "minChildren": 0,
         "maxChildren" : 0,
         "childSize" : "S",
-        "icon": self.asteroidSmallImage,
+        "icon": gameImages.asteroidSmallImage,
         "imageHeight": 24,
         "imageWidth": 20
       }
@@ -132,13 +327,6 @@
   /*** ELF CLASS ***/
 
   this.Elf = function(opts) {
-    this.elfImageReady = false;
-    this.elfImage = new Image();
-    this.elfImage.onload = function() {
-      this.elfImageReady = true;
-    };
-    this.elfImage.src = "assets/elf.png";
-
     $.extend(this, {
       velocity: 3 + Math.floor(Math.random() * 4),
       angle: 270, //angle of velocity
@@ -177,7 +365,7 @@
   }
 
   Elf.prototype.draw = function(context) {
-    this.drawRotatedImage(context, this.elfImage, this.originX, this.originY, this.imageWidth, this.imageHeight, this.orientation);
+    this.drawRotatedImage(context, gameImages.elfImage, this.originX, this.originY, this.imageWidth, this.imageHeight, this.orientation);
   }
 
   Elf.prototype.drawRotatedImage = function(context, image, x, y, width, height, angle) {  
@@ -191,12 +379,6 @@
   /*** PLAYER CLASS ***/
 
   this.Player = function() {
-    this.playerImageReady = false;
-    this.playerImage = new Image();
-    this.playerImage.onload = function() {
-      this.playerImageReady = true;
-    };
-    this.playerImage.src = "assets/spaceship.png";
 
     this.imageHeight = 64;
     this.imageWidth = 128;
@@ -300,7 +482,7 @@
   }
 
   Player.prototype.draw = function(context) {
-    context.drawImage(this.playerImage, this.originX, this.originY, this.imageWidth, this.imageHeight);
+    context.drawImage(gameImages.playerImage, this.originX, this.originY, this.imageWidth, this.imageHeight);
     this.drawBullets(context);
   }
 
@@ -321,13 +503,6 @@
   /*** BULLET CLASS ***/
 
   this.Bullet = function(initialVelocityX, initialVelocityY, xOrigin, yOrigin) {
-    this.bulletImageReady = false;
-    this.bulletImage = new Image();
-    this.bulletImage.onload = function() {
-      this.bulletImageReady = true;
-    };
-    this.bulletImage.src = "assets/candy_cane.png";
-
     this.imageHeight = 16;
     this.imageWidth = 40;
 
@@ -353,7 +528,7 @@
   }
 
   Bullet.prototype.draw = function(context) {
-    context.drawImage(this.bulletImage, this.originX, this.originY, this.imageWidth, this.imageHeight);
+    context.drawImage(gameImages.bulletImage, this.originX, this.originY, this.imageWidth, this.imageHeight);
   }  
 
   /*** OPENING MENU ***/
@@ -363,34 +538,6 @@
   this.Game = function() {
 
     this.debug = false;
-
-    this.bkgdImage1Ready = false;
-    this.bkgdImage1 = new Image();
-    this.bkgdImage1.onload = function() {
-      this.bkgdImage1Ready = true;
-    };
-    this.bkgdImage1.src = "assets/space_bkgd_1.png";
-
-    this.bkgdImage2Ready = false;
-    this.bkgdImage2 = new Image();
-    this.bkgdImage2.onload = function() {
-      this.bkgdImage2Ready = true;
-    };
-    this.bkgdImage2.src = "assets/space_bkgd_2.png";
-
-    this.bkgdImage3Ready = false;
-    this.bkgdImage3 = new Image();
-    this.bkgdImage3.onload = function() {
-      this.bkgdImage3Ready = true;
-    };
-    this.bkgdImage3.src = "assets/space_bkgd_3.png";
-
-    this.menuLogoReady = false;
-    this.menuLogo = new Image();
-    this.menuLogo.onload = function() {
-      this.menuLogoReady = true;
-    };
-    this.menuLogo.src = "assets/menu_logo.png";
 
     this.bkgdVelocity = -1;
     this.bkgdAcceleration = -.01;
@@ -422,7 +569,7 @@
       menuNumAsteroids: 10,
     }
 
-    this.gameState = 0;
+    this.gameState = -1;
     this.gameInPlay = true;
     this.player = new Player();
 
@@ -593,7 +740,7 @@
     if( this.spacePressed) {
       //createjs.Sound.play("BeginDing");
       //this.currentMusic.stop();
-      this.gameState = 1;
+      this.playIntroCinematic();
       var _this = this;
 
       // setTimeout(function() {
@@ -616,9 +763,9 @@
   Game.prototype.drawMenu = function() {
 
     //draw the background
-    this.context.drawImage(this.bkgdImage1, this.menuInfo.menuBackgroundPosition1x, this.menuInfo.menuBackgroundPosition1y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
-    this.context.drawImage(this.bkgdImage2, this.menuInfo.menuBackgroundPosition2x, this.menuInfo.menuBackgroundPosition2y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
-    this.context.drawImage(this.bkgdImage3, this.menuInfo.menuBackgroundPosition3x, this.menuInfo.menuBackgroundPosition3y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
+    this.context.drawImage(gameImages.bkgdImage1, this.menuInfo.menuBackgroundPosition1x, this.menuInfo.menuBackgroundPosition1y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
+    this.context.drawImage(gameImages.bkgdImage2, this.menuInfo.menuBackgroundPosition2x, this.menuInfo.menuBackgroundPosition2y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
+    this.context.drawImage(gameImages.bkgdImage3, this.menuInfo.menuBackgroundPosition3x, this.menuInfo.menuBackgroundPosition3y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
 
     //draw the elves and the asteroids
     for(var i=0; i < this.menuInfo.menuElves.length; i++) {
@@ -631,7 +778,7 @@
     }
 
     //draw the logo
-    this.context.drawImage(this.menuLogo, this.menuInfo.logoPositionx, this.menuInfo.logoPositiony, this.menuInfo.logoWidth, this.menuInfo.logoHeight);
+    this.context.drawImage(gameImages.menuLogo, this.menuInfo.logoPositionx, this.menuInfo.logoPositiony, this.menuInfo.logoWidth, this.menuInfo.logoHeight);
 
     this.context.fillStyle = "rgb(255, 255, 255)";
     this.context.fonts = "34px Arial";
@@ -748,9 +895,9 @@
 
   Game.prototype.drawBackground = function() {
     this.context.fillStyle = "rgb(250, 250, 250)";
-    this.context.drawImage(this.bkgdImage1, this.bkgd1X, this.bkgd1Y, this.gameWidth, this.gameHeight);
-    this.context.drawImage(this.bkgdImage2, this.bkgd2X, this.bkgd2Y, this.gameWidth, this.gameHeight);
-    this.context.drawImage(this.bkgdImage3, this.bkgd3X, this.bkgd3Y, this.gameWidth, this.gameHeight);
+    this.context.drawImage(gameImages.bkgdImage1, this.bkgd1X, this.bkgd1Y, this.gameWidth, this.gameHeight);
+    this.context.drawImage(gameImages.bkgdImage2, this.bkgd2X, this.bkgd2Y, this.gameWidth, this.gameHeight);
+    this.context.drawImage(gameImages.bkgdImage3, this.bkgd3X, this.bkgd3Y, this.gameWidth, this.gameHeight);
   }
 
   Game.prototype.drawAsteroids = function() {
@@ -790,7 +937,7 @@
     this.context.fillText("elves:" + this.player.elves, elvesPositionX, elvesPositionY);
 
     for( var i = 0; i < this.player.lives; i++) {
-      this.context.drawImage(this.player.playerImage, livesOriginX+livesOffsetX, livesOriginY+livesOffsetY,lifeWidth, lifeHeight);
+      this.context.drawImage(gameImages.playerImage, livesOriginX+livesOffsetX, livesOriginY+livesOffsetY,lifeWidth, lifeHeight);
       livesOffsetX += lifeWidth + lifeMargin;
     }
   }
@@ -932,6 +1079,78 @@
     }
   }
 
+  Game.prototype.playIntroCinematic = function() {
+    var _this = this;
+    this.gameState = 4;
+
+    var width = document.body.clientWidth,
+      height = document.body.clientHeight,
+      rudolphImages = [gameImages.rudolphImage1, gameImages.rudolphImage2],
+      textImages = [gameImages.introTextImage1, gameImages.introTextImage2];
+      console.log(gameImages);
+
+    var imagesArray = [
+      new AnimatedImage({
+        originX: width/2- 300/2,
+        originY: 50,
+        imageWidth: 300,
+        imageHeight: 300,
+        images:rudolphImages,
+        context: this.context,
+        imageDuration:300, //in ms
+        currentImageIndex: 0
+      }),
+      new AnimatedImage({
+        originX: width/2 - 928/2,
+        originY: 400,
+        imageWidth:928,
+        imageHeight: 225,
+        images:textImages,
+        context: this.context,
+        imageDuration:800, //in ms
+        currentImageIndex: 0
+      })
+    ]
+
+    this.cinematic = new Cinematic({
+      context:this.context,
+      images:imagesArray,
+      duration: 12000,
+      completionCallback:function(){ 
+        _this.gameState = 1; 
+      }
+    });
+
+    // do {
+
+    // } while (!imagesReady)
+
+    this.cinematic.play();
+
+    var imagesReady = function() {
+      return true;
+    }
+  }
+
+  Game.prototype.playCurrentCinematic = function() {
+    this.cinematic.draw();
+  }
+
+  Game.prototype.loading = function() {
+    var width = document.body.clientWidth,
+      height = document.body.clientHeight;
+    this.context.fillStyle = this.fillColor;
+    this.context.rect(0, 0, width, height);
+    this.context.fill();
+
+    this.loadingTextImage = new Image();
+    this.loadingTextImageReady = false;
+    this.loadingTextImage.onload = function() {
+      loadingTextImageReady = true;
+    };
+    this.loadingTextImage.src = "assets/loading_text.png";
+  }
+
   Game.prototype.pause = function() {
     console.log('PAUSED')
   }
@@ -946,9 +1165,15 @@
 
   $(document).ready(function() {
     var game = new Game();
+    gameImages = new Images(function() {
+      console.log('images are loaded');
+      game.gameState = 0;
+    });
     game.initialize();
     var loopInterval = setInterval(function() {
       switch(game.gameState) {
+        case -1:
+          game.loading();
         case 0:
           game.mainMenu();
           break;
@@ -956,6 +1181,10 @@
           game.play();
           break;
         case 2:
+          break;
+        case 4:
+          //cinematic
+          game.playCurrentCinematic();
           break;
         case 3:
           game.over();
