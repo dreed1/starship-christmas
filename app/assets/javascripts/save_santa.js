@@ -821,7 +821,7 @@
     this.context.drawImage(gameImages.menuLogo, this.menuInfo.logoPositionx, this.menuInfo.logoPositiony, this.menuInfo.logoWidth, this.menuInfo.logoHeight);
 
     this.context.fillStyle = "rgb(255, 255, 255)";
-    this.context.fonts = "34px Arial";
+    this.context.font = "34px Arial";
     this.context.fillText("- PRESS SPACE TO PLAY -", this.gameWidth/2 - 50, this.gameHeight - 50);
   }
 
@@ -972,7 +972,7 @@
       lifeHeight = 40;
 
     this.context.fillStyle = "rgb(255, 255, 255)";
-    this.context.fonts = "14pt helvetica";
+    this.context.font = "14pt helvetica";
     this.context.fillText("SCORE:" + this.score, scorePositionX, scorePositionY);
     this.context.fillText("elves:" + this.player.elves, elvesPositionX, elvesPositionY);
 
@@ -1288,7 +1288,7 @@
 
   Game.prototype.over = function() {
     this.context.fillStyle = "rgb(255, 255, 255)";
-    this.context.fonts = "34pt helvetica";
+    this.context.font = "34pt helvetica";
     this.context.fillText("GAME OVER", this.gameWidth / 2, this.gameHeight / 2);
     //this.currentMusic.stop();
     //createjs.Sound.play("GameOver");
