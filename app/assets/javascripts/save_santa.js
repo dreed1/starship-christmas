@@ -2,7 +2,7 @@
   var Images = function(imagesLoadedCallback) {
     var _this = this;
       
-    this.totalImages = 37;
+    this.totalImages = 42;
     this.imagesReady = 0;
     this.completionCallback = imagesLoadedCallback;
 
@@ -85,6 +85,46 @@
       imageReady();
     };
     this.menuLogo.src = "assets/menu_logo.png";
+
+    this.santaImage1 = new Image();
+    this.santaImage1Ready = false;
+    this.santaImage1.onload = function() {
+      this.santaImage1Ready = true;
+      imageReady();
+    };
+    this.santaImage1.src = "assets/santa_1.png";
+
+    this.santaImage2 = new Image();
+    this.santaImage2Ready = false;
+    this.santaImage2.onload = function() {
+      this.santaImage2Ready = true;
+      imageReady();
+    };
+    this.santaImage2.src = "assets/santa_2.png";
+
+    this.winTextImage = new Image();
+    this.winTextImageReady = false;
+    this.winTextImage.onload = function() {
+      this.winTextImageReady = true;
+      imageReady();
+    };
+    this.winTextImage.src = "assets/win_text.png";
+
+    this.loseTextImage = new Image();
+    this.loseTextImageReady = false;
+    this.loseTextImage.onload = function() {
+      this.loseTextImageReady = true;
+      imageReady();
+    };
+    this.loseTextImage.src = "assets/lose_text.png";
+
+    this.levelCompleteImage = new Image();
+    this.levelCompleteImageReady = false;
+    this.levelCompleteImage.onload = function() {
+      this.levelCompleteImageReady = true;
+      imageReady();
+    };
+    this.levelCompleteImage.src = "assets/level_complete.png";
 
     this.rudolphImage1 = new Image();
     this.rudolphImage1Ready = false;
@@ -188,7 +228,7 @@
       player5PortraitImageReady = true;
       imageReady();
     };
-    this.player5PortraitImage.src = "assets/pilot_jess.png";
+    this.player5PortraitImage.src = "assets/pilot_adam.png";
 
     this.player6PortraitImage = new Image();
     player6PortraitImageReady = false;
@@ -204,7 +244,7 @@
       player7PortraitImageReady = true;
       imageReady();
     };
-    this.player7PortraitImage.src = "assets/pilot_adam.png";
+    this.player7PortraitImage.src = "assets/pilot_jess.png";
 
     this.player8PortraitImage = new Image();
     player8PortraitImageReady = false;
@@ -244,7 +284,7 @@
       this.player1AvatarReady = true;
       imageReady();
     };
-    this.player1Avatar.src = "assets/spaceship.png";
+    this.player1Avatar.src = "assets/sleigh_dani.png";
 
     this.player2AvatarReady = false;
     this.player2Avatar = new Image();
@@ -252,7 +292,7 @@
       this.player2AvatarReady = true;
       imageReady();
     };
-    this.player2Avatar.src = "assets/spaceship.png";
+    this.player2Avatar.src = "assets/sleigh_abram.png";
 
     this.player3AvatarReady = false;
     this.player3Avatar = new Image();
@@ -260,7 +300,7 @@
       this.player3AvatarReady = true;
       imageReady();
     };
-    this.player3Avatar.src = "assets/spaceship.png";
+    this.player3Avatar.src = "assets/sleigh_brandon.png";
 
     this.player4AvatarReady = false;
     this.player4Avatar = new Image();
@@ -268,7 +308,7 @@
       this.player4AvatarReady = true;
       imageReady();
     };
-    this.player4Avatar.src = "assets/spaceship.png";
+    this.player4Avatar.src = "assets/sleigh_noah.png";
 
     this.player5AvatarReady = false;
     this.player5Avatar = new Image();
@@ -276,7 +316,7 @@
       this.player5AvatarReady = true;
       imageReady();
     };
-    this.player5Avatar.src = "assets/spaceship.png";
+    this.player5Avatar.src = "assets/sleigh_adam.png";
 
     this.player6AvatarReady = false;
     this.player6Avatar = new Image();
@@ -284,7 +324,7 @@
       this.player6AvatarReady = true;
       imageReady();
     };
-    this.player6Avatar.src = "assets/spaceship.png";
+    this.player6Avatar.src = "assets/sleigh_alex.png";
 
     this.player7AvatarReady = false;
     this.player7Avatar = new Image();
@@ -292,7 +332,7 @@
       this.player7AvatarReady = true;
       imageReady();
     };
-    this.player7Avatar.src = "assets/spaceship.png";
+    this.player7Avatar.src = "assets/sleigh_jess.png";
 
     this.player8AvatarReady = false;
     this.player8Avatar = new Image();
@@ -300,7 +340,7 @@
       this.player8AvatarReady = true;
       imageReady();
     };
-    this.player8Avatar.src = "assets/spaceship.png";
+    this.player8Avatar.src = "assets/sleigh_jacob.png";
 
     this.playerImages = [
       this.player1Avatar,
@@ -387,7 +427,7 @@
         borderImageHeight = 220;
 
     if(bordersRectWidth < borderImageWidth * 4) bordersRectWidth = borderImageWidth * 4;
-    if(bordersRectHeight < borderImageHeight * 2) bordersRectHeight = borderImageHeight * 2;
+    if(bordersRectHeight < (borderImageHeight * 2) + 20) bordersRectHeight = (borderImageHeight * 2) + 20;
 
     //this thing assumes there's 8 players...
     //customize it yourself!
@@ -397,7 +437,7 @@
           yOffset = (bordersRectHeight - (2 * borderImageHeight)),
           row = i < 4 ? 0 : 1,
           borderImageOriginX = 100  + ((i % 4) * xOffset) + ((i % 4) * borderImageWidth),
-          borderImageOriginY = 100 + (row * yOffset) + (row * borderImageHeight);
+          borderImageOriginY = 140 + (row * yOffset) + (row * borderImageHeight);
 
       this.context.drawImage(borderImage, borderImageOriginX, borderImageOriginY, borderImageWidth, borderImageHeight);
       this.context.drawImage(this.playerImages[i], borderImageOriginX + 5, borderImageOriginY + 5, borderImageWidth - 10, borderImageHeight - 10);
@@ -459,7 +499,7 @@
       duration: 500,
       fillColor: '#000',
       overlayOpacity: 1,
-      shouldFadeIn: true,
+      shouldFadeIn: false,
       shouldFadeOut: false,
       fadeDuration: 400,//ms
       completionCallback:function(){}
@@ -705,8 +745,8 @@
   this.Player = function(avatar) {
     this.playerAvatar = avatar;
 
-    this.imageHeight = 64;
-    this.imageWidth = 128;
+    this.imageHeight = 96;
+    this.imageWidth = 196;
 
     this.originX = 64;
     this.originY = 64;
@@ -807,8 +847,8 @@
   }
 
   Player.prototype.draw = function(context) {
-    context.drawImage(gameImages.playerImages[this.playerAvatar], this.originX, this.originY, this.imageWidth, this.imageHeight);
     this.drawBullets(context);
+    context.drawImage(gameImages.playerImages[this.playerAvatar], this.originX, this.originY, this.imageWidth, this.imageHeight);
   }
 
   Player.prototype.drawBullets = function(context) {
@@ -914,13 +954,21 @@
     this.elves = [];
     this.maxElves = 3;
     this.maxElfVelocityX = 18;
-    this.maxElfVelocityY = 98;
+    this.maxElfVelocityY = 24;
+
+    this.martians = [];
+    this.maxMartians = 3;
+    this.maxMartianVelocityX = 18;
+    this.maxMartianVelocityY = 98;
 
     this.leftPressed = false;
     this.rightPressed = false;
     this.upPressed = false;
     this.downPressed = false;
     this.spacePressed = false;
+
+    this.nextLevel = false;
+    this.currentLevel = 0;
 
     this.currentMusic;
     this.musicVolume = 0.5;
@@ -1280,10 +1328,10 @@
       lifeMargin = 8,
       livesOriginX = lifeMargin + 20,
       livesOriginY = 10,
-      livesOffsetX = 0,
+      livesOffsetX = 4,
       livesOffsetY = 0,
-      lifeWidth = 40,
-      lifeHeight = 40;
+      lifeWidth = 60,
+      lifeHeight = 30;
 
     this.context.fillStyle = "rgb(255, 255, 255)";
     this.context.font = "14pt helvetica";
@@ -1339,6 +1387,9 @@
       if(this.collides(this.elves[i], this.player)) {
         cullArray.push(i);
         this.player.collideWithElf();
+        if(this.player.elves >= (1 + this.currentLevel) * 10) {
+          this.proceedToNextLevel();
+        }
       }
     }
     for(var i = 0; i < cullArray.length; i++) {
@@ -1428,9 +1479,223 @@
     this.checkCollisions();
     this.maintainObjects();
     this.gameInPlay = this.maintainUser();
+
     if(!this.gameInPlay) {
-      this.gameState = 3;
+      this.loseGame();
     }
+  }
+
+  Game.prototype.startGame = function() {
+    this.gameState = 1;
+    this.asteroids = [];
+    this.maxAsteroids = 6;
+    this.maxAsteroidVelocityX = 14;
+    this.maxAsteroidVelocityY = 0.4;
+
+    this.elves = [];
+    this.maxElves = 5;
+    this.maxElfVelocityX = 23;
+    this.maxElfVelocityY = 13;
+
+    this.martians = [];
+    this.maxMartians = 0;
+    this.maxMartianVelocityX = 3;
+    this.maxMartianVelocityY = 12;
+  }
+
+  Game.prototype.proceedToNextLevel = function() {
+    var _this = this;
+    this.currentLevel++;
+    switch(this.currentLevel) {
+      case 1: //2nd level
+        this.asteroids = [];
+        this.maxAsteroids = 11;
+        this.maxAsteroidVelocityX = 25;
+        this.maxAsteroidVelocityY = 0.7;
+
+        this.elves = [];
+        this.maxElves = 2;
+        this.maxElfVelocityX = 56;
+        this.maxElfVelocityY = 78;
+
+        this.martians = [];
+        this.maxMartians = 2;
+        this.maxMartianVelocityX = 3;
+        this.maxMartianVelocityY = 12;
+        break;
+      case 2: //boss level
+        this.asteroids = [];
+        this.maxAsteroids = 6;
+        this.maxAsteroidVelocityX = 34;
+        this.maxAsteroidVelocityY = 7;
+
+        this.elves = [];
+        this.maxElves = 2;
+        this.maxElfVelocityX = 86;
+        this.maxElfVelocityY = 118;
+
+        this.martians = [];
+        this.maxMartians = 9;
+        this.maxMartianVelocityX = 6;
+        this.maxMartianVelocityY = 1.8;
+        break;
+      case 3:
+      default:
+        this.winGame();
+        break;
+      }
+    if(this.currentLevel < 3) {
+      this.playNextLevelCinematic(function() {
+        _this.gameState = 1;
+      })
+    }
+  };
+
+  Game.prototype.winGame = function() {
+    var _this = this;
+    this.playWinCinematic(function() {
+      _this.getScoreInformation();
+    })
+  }
+
+  Game.prototype.loseGame = function() {
+    console.log('you lost')
+    var _this = this;
+    this.playLoseCinematic(function() {
+      _this.getScoreInformation();
+    });
+  }
+
+  Game.prototype.getScoreInformation = function() {
+    var _this = this;
+    console.log('get high score info here then do something');
+    setTimeout(function() {
+      _this.gameState = 0;
+    }, 3000);
+  }
+
+  Game.prototype.playWinCinematic = function(callback) {
+    var _this = this;
+    this.gameState = 4;
+
+    var width = document.body.clientWidth,
+      height = document.body.clientHeight,
+      santaImages = [gameImages.santaImage1, gameImages.santaImage2],
+      textImages = [gameImages.winTextImage];
+
+    var imagesArray = [
+      new AnimatedImage({
+        originX: width/2- 300/2,
+        originY: 50,
+        imageWidth: 300,
+        imageHeight: 300,
+        images:santaImages,
+        context: this.context,
+        imageDuration:100, //in ms
+        currentImageIndex: 0
+      }),
+      new AnimatedImage({
+        originX: width/2 - 928/2,
+        originY: 400,
+        imageWidth:928,
+        imageHeight: 225,
+        images:textImages,
+        context: this.context,
+        imageDuration:800, //in ms
+        currentImageIndex: 0
+      })
+    ]
+
+    this.cinematic = new Cinematic({
+      context:this.context,
+      images:imagesArray,
+      shouldFadeIn: false,
+      shouldFadeOut: false,
+      duration: 6000,
+      completionCallback: callback
+    });
+
+    this.cinematic.play();
+  }
+
+  Game.prototype.playLoseCinematic = function(callback) {
+    var _this = this;
+    this.gameState = 4;
+
+    var width = document.body.clientWidth,
+      height = document.body.clientHeight,
+      rudolphImages = [gameImages.rudolphImage1, gameImages.rudolphImage2],
+      textImages = [gameImages.loseTextImage];
+
+    var imagesArray = [
+      new AnimatedImage({
+        originX: width/2- 300/2,
+        originY: 50,
+        imageWidth: 300,
+        imageHeight: 300,
+        images:rudolphImages,
+        context: this.context,
+        imageDuration:100, //in ms
+        currentImageIndex: 0
+      }),
+      new AnimatedImage({
+        originX: width/2 - 928/2,
+        originY: 400,
+        imageWidth:928,
+        imageHeight: 225,
+        images:textImages,
+        context: this.context,
+        imageDuration:800, //in ms
+        currentImageIndex: 0
+      })
+    ]
+
+    this.cinematic = new Cinematic({
+      context:this.context,
+      images:imagesArray,
+      shouldFadeIn: false,
+      shouldFadeOut: false,
+      duration: 6000,
+      completionCallback: callback
+    });
+
+    this.cinematic.play();
+  }
+
+  Game.prototype.playNextLevelCinematic = function() {
+    var _this = this;
+    this.gameState = 4;
+
+    var width = document.body.clientWidth,
+      height = document.body.clientHeight,
+      nextLevelImages = [gameImages.levelCompleteImage];
+
+    var imagesArray = [
+      new AnimatedImage({
+        originX: width/2-450,
+        originY: height/2-200,
+        imageWidth: 900,
+        imageHeight: 400,
+        images: nextLevelImages,
+        context: this.context,
+        imageDuration:999, //in ms
+        currentImageIndex: 0
+      })
+    ]
+
+    this.cinematic = new Cinematic({
+      context:this.context,
+      images:imagesArray,
+      duration: 4000,
+      shouldFadeIn: false,
+      shouldFadeOut: false,
+      fadeDuration: 300,
+      completionCallback:function(){ 
+        _this.gameState = 1; 
+      }
+    });
+
+    this.cinematic.play();
   }
 
   Game.prototype.playNovawareCinematic = function() {
@@ -1458,8 +1723,8 @@
       context:this.context,
       images:imagesArray,
       duration: 3500,
-      shouldFadeIn: true,
-      shouldFadeOut: true,
+      shouldFadeIn: false,
+      shouldFadeOut: false,
       fadeDuration: 300,
       completionCallback:function(){ 
         _this.gameState = 0; 
@@ -1467,10 +1732,6 @@
     });
 
     this.cinematic.play();
-
-    var imagesReady = function() {
-      return true;
-    }
   }
 
   Game.prototype.playIntroCinematic = function() {
@@ -1511,7 +1772,6 @@
       duration: 6000,
       completionCallback:function(){ 
         _this.playCharacterSelect();
-        //_this.playInstructionCinematic();
       }
     });
 
@@ -1558,18 +1818,14 @@
       context:this.context,
       images:imagesArray,
       shouldFadeIn: false,
-      shouldFadeOut: true,
+      shouldFadeOut: false,
       duration: 6000,
       completionCallback:function(){ 
-        _this.gameState = 1; 
+        _this.startGame();
       }
     });
 
     this.cinematic.play();
-
-    var imagesReady = function() {
-      return true;
-    }
   }
 
   Game.prototype.playCurrentCinematic = function() {
@@ -1611,7 +1867,6 @@
     this.context.fillStyle = "rgb(255, 255, 255)";
     this.context.font = "34pt helvetica";
     this.context.fillText("GAME OVER", this.gameWidth / 2, this.gameHeight / 2);
-    var playerName = prompt("Please enter your name for the high scores","Player 1");
     //this.currentMusic.stop();
     //createjs.Sound.play("GameOver");
   }
@@ -1636,7 +1891,7 @@
         case 2: // pause screen? idk, placeholder FOR NOTHING!
           break;
         case 3: //game over
-          game.over();
+          game.loseGame();
           clearInterval(loopInterval);
           break;
         case 4:
