@@ -2,7 +2,7 @@
   var Images = function(imagesLoadedCallback) {
     var _this = this;
       
-    this.totalImages = 19;
+    this.totalImages = 37;
     this.imagesReady = 0;
     this.completionCallback = imagesLoadedCallback;
 
@@ -45,14 +45,6 @@
       imageReady();
     };
     this.elfImage.src = "assets/elf.png";
-
-    this.playerImageReady = false;
-    this.playerImage = new Image();
-    this.playerImage.onload = function() {
-      this.playerImageReady = true;
-      imageReady();
-    };
-    this.playerImage.src = "assets/spaceship.png";
 
     this.bulletImageReady = false;
     this.bulletImage = new Image();
@@ -158,6 +150,169 @@
     };
     this.novawareImage2.src = "assets/novaware_image_2.png";
 
+    this.player1PortraitImage = new Image();
+    player1PortraitImageReady = false;
+    this.player1PortraitImage.onload = function() {
+      player1PortraitImageReady = true;
+      imageReady();
+    };
+    this.player1PortraitImage.src = "assets/pilot_dani.png";
+
+    this.player2PortraitImage = new Image();
+    player2PortraitImageReady = false;
+    this.player2PortraitImage.onload = function() {
+      player2PortraitImageReady = true;
+      imageReady();
+    };
+    this.player2PortraitImage.src = "assets/pilot_abram.png";
+
+    this.player3PortraitImage = new Image();
+    player3PortraitImageReady = false;
+    this.player3PortraitImage.onload = function() {
+      player3PortraitImageReady = true;
+      imageReady();
+    };
+    this.player3PortraitImage.src = "assets/pilot_brandon.png";
+
+    this.player4PortraitImage = new Image();
+    player4PortraitImageReady = false;
+    this.player4PortraitImage.onload = function() {
+      player4PortraitImageReady = true;
+      imageReady();
+    };
+    this.player4PortraitImage.src = "assets/pilot_noah.png";
+
+    this.player5PortraitImage = new Image();
+    player5PortraitImageReady = false;
+    this.player5PortraitImage.onload = function() {
+      player5PortraitImageReady = true;
+      imageReady();
+    };
+    this.player5PortraitImage.src = "assets/pilot_jess.png";
+
+    this.player6PortraitImage = new Image();
+    player6PortraitImageReady = false;
+    this.player6PortraitImage.onload = function() {
+      player6PortraitImageReady = true;
+      imageReady();
+    };
+    this.player6PortraitImage.src = "assets/pilot_alex.png";
+
+    this.player7PortraitImage = new Image();
+    player7PortraitImageReady = false;
+    this.player7PortraitImage.onload = function() {
+      player7PortraitImageReady = true;
+      imageReady();
+    };
+    this.player7PortraitImage.src = "assets/pilot_adam.png";
+
+    this.player8PortraitImage = new Image();
+    player8PortraitImageReady = false;
+    this.player8PortraitImage.onload = function() {
+      player8PortraitImageReady = true;
+      imageReady();
+    };
+    this.player8PortraitImage.src = "assets/pilot_jacob.png";
+
+    this.playerSelectBackgroundImage = new Image();
+    playerSelectBackgroundImageReady = false;
+    this.playerSelectBackgroundImage.onload = function() {
+      playerSelectBackgroundImageReady = true;
+      imageReady();
+    };
+    this.playerSelectBackgroundImage.src = "assets/player_select_background.png";
+
+    this.playerSelectInactivePortraitImage = new Image();
+    playerSelectInactivePortraitImageReady = false;
+    this.playerSelectInactivePortraitImage.onload = function() {
+      playerSelectInactivePortraitImageReady = true;
+      imageReady();
+    };
+    this.playerSelectInactivePortraitImage.src = "assets/portrait_border_inactive.png";
+
+    this.playerSelectActivePortraitImage = new Image();
+    playerSelectActivePortraitImageReady = false;
+    this.playerSelectActivePortraitImage.onload = function() {
+      playerSelectActivePortraitImageReady = true;
+      imageReady();
+    };
+    this.playerSelectActivePortraitImage.src = "assets/portrait_border_active.png";
+
+    this.player1AvatarReady = false;
+    this.player1Avatar = new Image();
+    this.player1Avatar.onload = function() {
+      this.player1AvatarReady = true;
+      imageReady();
+    };
+    this.player1Avatar.src = "assets/spaceship.png";
+
+    this.player2AvatarReady = false;
+    this.player2Avatar = new Image();
+    this.player2Avatar.onload = function() {
+      this.player2AvatarReady = true;
+      imageReady();
+    };
+    this.player2Avatar.src = "assets/spaceship.png";
+
+    this.player3AvatarReady = false;
+    this.player3Avatar = new Image();
+    this.player3Avatar.onload = function() {
+      this.player3AvatarReady = true;
+      imageReady();
+    };
+    this.player3Avatar.src = "assets/spaceship.png";
+
+    this.player4AvatarReady = false;
+    this.player4Avatar = new Image();
+    this.player4Avatar.onload = function() {
+      this.player4AvatarReady = true;
+      imageReady();
+    };
+    this.player4Avatar.src = "assets/spaceship.png";
+
+    this.player5AvatarReady = false;
+    this.player5Avatar = new Image();
+    this.player5Avatar.onload = function() {
+      this.player5AvatarReady = true;
+      imageReady();
+    };
+    this.player5Avatar.src = "assets/spaceship.png";
+
+    this.player6AvatarReady = false;
+    this.player6Avatar = new Image();
+    this.player6Avatar.onload = function() {
+      this.player6AvatarReady = true;
+      imageReady();
+    };
+    this.player6Avatar.src = "assets/spaceship.png";
+
+    this.player7AvatarReady = false;
+    this.player7Avatar = new Image();
+    this.player7Avatar.onload = function() {
+      this.player7AvatarReady = true;
+      imageReady();
+    };
+    this.player7Avatar.src = "assets/spaceship.png";
+
+    this.player8AvatarReady = false;
+    this.player8Avatar = new Image();
+    this.player8Avatar.onload = function() {
+      this.player8AvatarReady = true;
+      imageReady();
+    };
+    this.player8Avatar.src = "assets/spaceship.png";
+
+    this.playerImages = [
+      this.player1Avatar,
+      this.player2Avatar,
+      this.player3Avatar,
+      this.player4Avatar,
+      this.player5Avatar,
+      this.player6Avatar,
+      this.player7Avatar,
+      this.player8Avatar,
+    ];
+
     var imageReady = function() {
       _this.imagesReady++;
       if(_this.imagesReady >= _this.totalImages) {
@@ -165,6 +320,88 @@
       }
     }
 
+  }
+
+  /*********************************************************************************/
+  /***************************CHARACTER SELECT MODEL********************************/
+  /*********************************************************************************/
+
+  this.CharacterSelect = function(opts) {
+    $.extend(this, {
+      originX: 0,
+      originY: 0,
+      backgroundWidth: document.body.clientWidth,
+      backgroundHeight: document.body.clientHeight,
+      activePlayer: 0,
+      backgroundImage: null,
+      playerImages:[],
+      inactivePlayerSelectBorderImage:null,
+      activePlayerSelectBorderImage:null,
+      context: null,
+      completionCallback: function() {}
+    },opts);
+  }
+
+  CharacterSelect.prototype.changePlayer = function(direction) {
+    keys = { left: 37, up: 38, right: 39, down: 40, space: 32 };
+    switch(direction) {
+      case keys.left:
+        this.activePlayer > 0 ? this.activePlayer-- : this.activePlayer = this.playerImages.length -1;
+        break;
+      case keys.right:
+        this.activePlayer < this.playerImages.length-1 ? this.activePlayer++ : this.activePlayer = 0;
+        break;
+      case keys.up:
+        this.activePlayer = this.activePlayer > 3 ? this.activePlayer - 4 : this.activePlayer + 4;
+        break;
+      case keys.down:
+        this.activePlayer = (this.activePlayer + 4) % this.playerImages.length;
+        break;
+      case keys.space:
+        console.log('hit the sapce bar');
+        this.playerChosen();
+        break;
+      default:
+        console.log('you screwed up something in player select');
+        break;
+    }
+  }
+
+  CharacterSelect.prototype.playerChosen = function() {
+    this.completionCallback(this.activePlayer);
+  }
+
+  CharacterSelect.prototype.draw = function() {
+    this.drawBackground();
+    this.drawPlayerImages();
+  }
+
+  CharacterSelect.prototype.drawBackground = function() {
+    this.context.drawImage(this.backgroundImage, this.originX, this.originY, this.backgroundWidth, this.backgroundHeight);
+  }
+
+  CharacterSelect.prototype.drawPlayerImages = function() {
+    var bordersRectWidth = this.backgroundWidth - 200,
+        bordersRectHeight = this.backgroundHeight - 200,
+        borderImageWidth = 150,
+        borderImageHeight = 220;
+
+    if(bordersRectWidth < borderImageWidth * 4) bordersRectWidth = borderImageWidth * 4;
+    if(bordersRectHeight < borderImageHeight * 2) bordersRectHeight = borderImageHeight * 2;
+
+    //this thing assumes there's 8 players...
+    //customize it yourself!
+    for(var i=0; i< this.playerImages.length; i++) {
+      var borderImage = i == this.activePlayer ? this.activePlayerSelectBorderImage : this.inactivePlayerSelectBorderImage,
+          xOffset = (bordersRectWidth - (4 * borderImageWidth)) / 3,
+          yOffset = (bordersRectHeight - (2 * borderImageHeight)),
+          row = i < 4 ? 0 : 1,
+          borderImageOriginX = 100  + ((i % 4) * xOffset) + ((i % 4) * borderImageWidth),
+          borderImageOriginY = 100 + (row * yOffset) + (row * borderImageHeight);
+
+      this.context.drawImage(borderImage, borderImageOriginX, borderImageOriginY, borderImageWidth, borderImageHeight);
+      this.context.drawImage(this.playerImages[i], borderImageOriginX + 5, borderImageOriginY + 5, borderImageWidth - 10, borderImageHeight - 10);
+    }
   }
 
   /*********************************************************************************/
@@ -179,8 +416,9 @@
       imageHeight: 100,
       images:[],
       context: null,
-      imageDuration:25, //in ms
+      imageDuration:200, //in ms
       currentImageIndex: 0,
+      timeutDuration: 30000 // in ms
     },opts);
   }
 
@@ -191,22 +429,18 @@
 
   AnimatedImage.prototype.play = function() {
     var _this = this;
-    setTimeout(function() {
+    var changeInterval = setInterval(function() {
       _this.nextImage();
     }, this.imageDuration);
+
+    setTimeout(function() {
+      clearInterval(changeInterval);
+    }, this.timeutDuration)
   }
 
   AnimatedImage.prototype.nextImage = function() {
     var _this = this;
-    this.currentImageIndex++;
-    if(this.currentImageIndex < this.images.length) {
-      setTimeout(function() {
-        _this.nextImage();
-      }, this.imageDuration);
-    } 
-    else {
-      this.reset();
-    }
+    this.currentImageIndex = (this.currentImageIndex + 1) % this.images.length;
   }
 
   AnimatedImage.prototype.draw = function() {
@@ -224,20 +458,69 @@
       images:[],
       duration: 500,
       fillColor: '#000',
+      overlayOpacity: 1,
+      shouldFadeIn: true,
+      shouldFadeOut: false,
+      fadeDuration: 400,//ms
       completionCallback:function(){}
     },opts);
   }
 
   Cinematic.prototype.play = function() {
     var _this = this;
-    setTimeout(function() {
-      _this.completionCallback();
-    }, this.duration);
+    if(this.shouldFadeIn) {
+      this.fadeIn();
+    }
+    else {
+      this.overlayOpacity = 0;
+    }
+    if(this.shouldFadeOut) {
+      setTimeout(function() {
+        _this.fadeOut();
+      }, _this.duration - _this.fadeDuration - 100);
+    }
+    else {
+      setTimeout(function() {
+        _this.completionCallback();
+      }, this.duration);
+    }
     for(var i=0; i< this.images.length; i++) {
       this.images[i].play(function() {
         _this.images[i].play();
       });
     }
+  }
+
+  Cinematic.prototype.fadeIn = function() {
+    var _this = this;
+    var interval = setInterval(function() {
+      _this.overlayOpacity -= .01;
+      if(_this.overlayOpacity <= 0) {
+        clearInterval(interval);
+      }
+    }, _this.fadeDuration/100);
+
+  }
+
+  Cinematic.prototype.fadeOut = function() {
+    var _this = this;
+    var interval = setInterval(function() {
+      _this.overlayOpacity += .01;
+      if(_this.overlayOpacity >= 1) {
+        _this.completionCallback();
+        clearInterval(interval);
+      }
+    }, _this.fadeDuration/100);
+
+  }
+
+  Cinematic.prototype.drawOverlay = function() {
+    var width = document.body.clientWidth,
+      height = document.body.clientHeight,
+      overlayColor = "rgba(0,0,0," + this.overlayOpacity + ")";
+    this.context.fillStyle = overlayColor;
+    this.context.rect(0, 0, width, height);
+    this.context.fill();
   }
 
   Cinematic.prototype.fillBackground = function() {
@@ -253,6 +536,7 @@
     for(var i=0; i< this.images.length; i++) {
       this.images[i].draw();
     }
+    if(this.overlayOpacity > 0) this.drawOverlay();
   }
 
   /*********************************************************************************/
@@ -418,7 +702,8 @@
 
   /*** PLAYER CLASS ***/
 
-  this.Player = function() {
+  this.Player = function(avatar) {
+    this.playerAvatar = avatar;
 
     this.imageHeight = 64;
     this.imageWidth = 128;
@@ -522,7 +807,7 @@
   }
 
   Player.prototype.draw = function(context) {
-    context.drawImage(gameImages.playerImage, this.originX, this.originY, this.imageWidth, this.imageHeight);
+    context.drawImage(gameImages.playerImages[this.playerAvatar], this.originX, this.originY, this.imageWidth, this.imageHeight);
     this.drawBullets(context);
   }
 
@@ -611,7 +896,8 @@
 
     this.gameState = -1;
     this.gameInPlay = true;
-    this.player = new Player();
+    this.playerAvatar = 0;
+    this.player;
 
     this.gameWidth = 0;
     this.gameHeight = 0;
@@ -641,12 +927,34 @@
   }
 
   Game.prototype.initialize = function() {
+    var _this = this;
     this.gameWidth = document.body.clientWidth;
     this.gameHeight = document.body.clientHeight;
     this.canvas = document.getElementById('starshipXmas-canvas');
     this.canvas.height = this.gameHeight;
     this.canvas.width = this.gameWidth;
     this.context = this.canvas.getContext('2d');
+
+    this.characterSelect = new CharacterSelect({
+      backgroundImage: gameImages.playerSelectBackgroundImage,
+      playerImages:[
+        gameImages.player1PortraitImage,
+        gameImages.player2PortraitImage,
+        gameImages.player3PortraitImage,
+        gameImages.player4PortraitImage,
+        gameImages.player5PortraitImage,
+        gameImages.player6PortraitImage,
+        gameImages.player7PortraitImage,
+        gameImages.player8PortraitImage,
+      ],
+      inactivePlayerSelectBorderImage:gameImages.playerSelectInactivePortraitImage,
+      activePlayerSelectBorderImage:gameImages.playerSelectActivePortraitImage,
+      context: this.context,
+      completionCallback: (function(chosenPlayer) {
+        _this.player = new Player(chosenPlayer);
+        _this.playInstructionCinematic();
+      })
+    });
 
     this.bkgd1X = 0;
     this.bkgd2X = this.gameWidth;
@@ -780,6 +1088,7 @@
     if( this.spacePressed) {
       //createjs.Sound.play("BeginDing");
       //this.currentMusic.stop();
+      
       this.playIntroCinematic();
       var _this = this;
 
@@ -845,13 +1154,18 @@
         break;
         case arrow.space:
           _this.spacePressed = true;
-
         break;
       }
     });
     $(document).keyup(function(e) {
       var keyCode = e.keyCode || e.which,
         arrow = { left: 37, up: 38, right: 39, down: 40, space: 32 };
+
+      //if we're selecting a player allow that but normally we wont be so 
+      //i dont care right now about rebinding it... but you probably should. 
+      if(_this.gameState == 5) _this.characterSelect.changePlayer(keyCode);
+
+
       switch(keyCode) {
         case arrow.left:
           _this.leftPressed = false;
@@ -977,7 +1291,7 @@
     this.context.fillText("elves:" + this.player.elves, elvesPositionX, elvesPositionY);
 
     for( var i = 0; i < this.player.lives; i++) {
-      this.context.drawImage(gameImages.playerImage, livesOriginX+livesOffsetX, livesOriginY+livesOffsetY,lifeWidth, lifeHeight);
+      this.context.drawImage(gameImages.playerImages[this.player.playerAvatar], livesOriginX+livesOffsetX, livesOriginY+livesOffsetY,lifeWidth, lifeHeight);
       livesOffsetX += lifeWidth + lifeMargin;
     }
   }
@@ -1135,7 +1449,7 @@
         imageHeight: height,
         images: novawareImages,
         context: this.context,
-        imageDuration:250, //in ms
+        imageDuration:99, //in ms
         currentImageIndex: 0
       })
     ]
@@ -1143,7 +1457,10 @@
     this.cinematic = new Cinematic({
       context:this.context,
       images:imagesArray,
-      duration: 7000,
+      duration: 3500,
+      shouldFadeIn: true,
+      shouldFadeOut: true,
+      fadeDuration: 300,
       completionCallback:function(){ 
         _this.gameState = 0; 
       }
@@ -1191,15 +1508,12 @@
     this.cinematic = new Cinematic({
       context:this.context,
       images:imagesArray,
-      duration: 12000,
+      duration: 6000,
       completionCallback:function(){ 
-        _this.playInstructionCinematic();
+        _this.playCharacterSelect();
+        //_this.playInstructionCinematic();
       }
     });
-
-    // do {
-
-    // } while (!imagesReady)
 
     this.cinematic.play();
 
@@ -1243,7 +1557,9 @@
     this.cinematic = new Cinematic({
       context:this.context,
       images:imagesArray,
-      duration: 12000,
+      shouldFadeIn: false,
+      shouldFadeOut: true,
+      duration: 6000,
       completionCallback:function(){ 
         _this.gameState = 1; 
       }
@@ -1282,6 +1598,11 @@
 
   }
 
+  Game.prototype.playCharacterSelect = function() {
+    this.gameState = 5;
+    this.characterSelect.draw();
+  }
+
   Game.prototype.pause = function() {
     console.log('PAUSED')
   }
@@ -1290,6 +1611,7 @@
     this.context.fillStyle = "rgb(255, 255, 255)";
     this.context.font = "34pt helvetica";
     this.context.fillText("GAME OVER", this.gameWidth / 2, this.gameHeight / 2);
+    var playerName = prompt("Please enter your name for the high scores","Player 1");
     //this.currentMusic.stop();
     //createjs.Sound.play("GameOver");
   }
@@ -1313,13 +1635,16 @@
           break;
         case 2: // pause screen? idk, placeholder FOR NOTHING!
           break;
+        case 3: //game over
+          game.over();
+          clearInterval(loopInterval);
+          break;
         case 4:
           //cinematic
           game.playCurrentCinematic();
           break;
-        case 3: //game over
-          game.over();
-          clearInterval(loopInterval);
+        case 5: //character select
+          game.playCharacterSelect();
           break;
       }
     },16);//60 times a second
