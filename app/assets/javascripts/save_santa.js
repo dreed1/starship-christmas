@@ -1011,10 +1011,10 @@
       gameSounds.playSound("Shot");
       this.bullets.push( 
         new Bullet(
-          Math.max(this.velocityX + 10, 10),
+          Math.max(this.velocityX + 12, 12),
           0,
-          this.originX + this.imageHeight/2,
-          this.originY
+          this.originX + this.imageWidth/2,
+          this.originY + this.imageHeight/2
         )
       );
       this.canAttack = false;
@@ -1066,8 +1066,8 @@
   /*** BULLET CLASS ***/
 
   this.Bullet = function(initialVelocityX, initialVelocityY, xOrigin, yOrigin) {
-    this.imageHeight = 16;
-    this.imageWidth = 40;
+    this.imageHeight = 12;
+    this.imageWidth = 30;
 
     this.originX = xOrigin;
     this.originY = yOrigin;
@@ -1647,7 +1647,7 @@
     while(this.asteroids.length < this.maxAsteroids) {
       this.asteroids.push(
         new Asteroid({
-          originX: this.gameWidth +  50, 
+          originX: this.gameWidth +  (Math.random() * 700), 
           originY: Math.ceil(Math.random() * this.gameHeight),
           velocity: 2 + (Math.random() * 4),
           angle: 178 + Math.floor(Math.random() * 4)
@@ -1765,8 +1765,8 @@
 
         this.elves = [];
         this.maxElves = 2;
-        this.maxElfVelocityX = 56;
-        this.maxElfVelocityY = 78;
+        this.maxElfVelocityX = 46;
+        this.maxElfVelocityY = 38;
 
         this.martians = [];
         this.maxMartians = 3;
@@ -1775,9 +1775,9 @@
         break;
       case 2: //boss level
         this.asteroids = [];
-        this.maxAsteroids = 7;
-        this.maxAsteroidVelocityX = 44;
-        this.maxAsteroidVelocityY = 7;
+        this.maxAsteroids = 10;
+        this.maxAsteroidVelocityX = 39;
+        this.maxAsteroidVelocityY = 17;
 
         this.elves = [];
         this.maxElves = 2;
@@ -1785,7 +1785,7 @@
         this.maxElfVelocityY = 118;
 
         this.martians = [];
-        this.maxMartians = 12;
+        this.maxMartians = 6;
         this.maxMartianVelocityX = 60;
         this.maxMartianVelocityY = 18;
         break;
