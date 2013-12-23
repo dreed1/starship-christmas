@@ -2,7 +2,7 @@
   var Images = function(imagesLoadedCallback) {
     var _this = this;
       
-    this.totalImages = 42;
+    this.totalImages = 43;
     this.imagesReady = 0;
     this.completionCallback = imagesLoadedCallback;
 
@@ -45,6 +45,15 @@
       imageReady();
     };
     this.elfImage.src = "assets/elf.png";
+
+    this.martianImageReady = false;
+    this.martianImage = new Image();
+    this.martianImage.onload = function() {
+      this.martianImageReady = true;
+      imageReady();
+    };
+    this.martianImage.src = "assets/martian.png";
+
 
     this.bulletImageReady = false;
     this.bulletImage = new Image();
@@ -383,6 +392,7 @@
   }
 
   CharacterSelect.prototype.changePlayer = function(direction) {
+    gameSounds.playSound("Doot");
     keys = { left: 37, up: 38, right: 39, down: 40, space: 32 };
     switch(direction) {
       case keys.left:
@@ -398,7 +408,6 @@
         this.activePlayer = (this.activePlayer + 4) % this.playerImages.length;
         break;
       case keys.space:
-        console.log('hit the sapce bar');
         this.playerChosen();
         break;
       default:
@@ -408,6 +417,7 @@
   }
 
   CharacterSelect.prototype.playerChosen = function() {
+    gameSounds.playSound("Tiku");
     this.completionCallback(this.activePlayer);
   }
 
@@ -442,6 +452,139 @@
       this.context.drawImage(borderImage, borderImageOriginX, borderImageOriginY, borderImageWidth, borderImageHeight);
       this.context.drawImage(this.playerImages[i], borderImageOriginX + 5, borderImageOriginY + 5, borderImageWidth - 10, borderImageHeight - 10);
     }
+  }
+
+  /*********************************************************************************/
+  /********************************SOUND MODEL*****************************/
+  /*********************************************************************************/
+
+  this.Sounds = function(callback) {
+    $.extend(this, {
+      currentMusicId: null,
+      currentMusic: null,
+      currentSound: null,
+      soundVolume: 0.67,
+      musicVolume: 0.12,
+      loadedSounds: 0,
+      soundManifest: [
+        {
+          id:"Music1",
+          src:"bgm-gysahl-greens.mp3"
+        },
+        {
+          id:"Music2",
+          src:"bgm-soul-cruise.mp3"
+        },
+        {
+          id:"Music3",
+          src:"bgm-triple-dragon.mp3"
+        },
+        {
+          id:"Ding",
+          src:"snd-ding.mp3"
+        },
+        {
+          id:"Tiku",
+          src:"snd-tiku.mp3"
+        },
+        {
+          id:"Ugh",
+          src:"snd-ugh.mp3"
+        },
+        {
+          id:"Yeah",
+          src:"snd-yeah.mp3"
+        },
+        {
+          id:"CharacterConfirmed",
+          src:"snd-character-confirmed.mp3"
+        },
+        {
+          id:"Doot",
+          src:"snd-doot.mp3"
+        },
+        {
+          id:"Elf",
+          src:"snd-elf.mp3"
+        },
+        {
+          id:"Lose",
+          src:"snd-lose.mp3"
+        },
+        {
+          id:"PressStart",
+          src:"snd-press-start.mp3"
+        },
+        {
+          id:"Rudolph",
+          src:"snd-rudolph.mp3"
+        },
+        {
+          id:"Santa",
+          src:"snd-santa.mp3"
+        },
+        {
+          id:"Shot",
+          src:"snd-shot.mp3"
+        },
+        {
+          id:"Win",
+          src:"snd-win.mp3"
+        },
+      ]
+    });
+
+    this.soundLoadedCallback = callback;
+
+    // if initializeDefaultPlugins returns false, we cannot play sound in this browser
+    if (!createjs.Sound.initializeDefaultPlugins()) {
+      console.log('SOUND WONT PLAY')
+    }
+
+    this.audioPath = "assets/";
+
+    var _this = this;
+    createjs.Sound.addEventListener("fileload", createjs.proxy(_this.handleLoad, this));
+    createjs.Sound.registerManifest(this.soundManifest, this.audioPath);
+  }
+
+  Sounds.prototype.handleLoad = function(event) {
+    this.loadedSounds++;
+    if(this.loadedSounds >= this.soundManifest.length) {
+      this.soundLoadedCallback();
+    }
+  }
+
+  Sounds.prototype.changeSoundVolume = function(volume) {
+    this.soundVolume = volume;
+    this.currentSound.volume = this.soundVolume;
+  }
+
+  Sounds.prototype.changeMusicVolume = function(volume) {
+    this.musicVolume = volume;
+    this.currentMusic.volume = this.musicVolume;
+  }
+
+  Sounds.prototype.playMusic = function(sound_id) {
+    if(this.currentMusic) this.currentMusic.stop();
+    this.currentMusicId = sound_id;
+    this.currentMusic = createjs.Sound.play(sound_id);
+    this.currentMusic.addEventListener("complete", this.replayCurrentMusic);
+    this.currentMusic.volume = this.soundVolume;
+  }
+
+  Sounds.prototype.playSound = function(sound_id) {
+    this.currentSound = createjs.Sound.play(sound_id);
+    this.currentSound.volume = this.soundVolume;
+  }
+
+  Sounds.prototype.replayCurrentMusic = function() {
+    this.playMusic(this.currentMusicId);
+    this.currentMusic.addEventListener("complete", _this.replayCurrentMusic);
+  }
+
+  Sounds.prototype.stopMusic = function() {
+    this.currentMusic.stop();
   }
 
   /*********************************************************************************/
@@ -688,7 +831,59 @@
     self.init();
   }
 
-  /*** ELF CLASS ***/
+  /*** MARTIAN CLASS ***/
+
+  this.Martian = function(opts) {
+    $.extend(this, {
+      velocity: 3 + Math.floor(Math.random() * 4),
+      angle: 270, //angle of velocity
+      orientation: 0,
+      originX: Math.floor(Math.random()* 600),
+      originY: Math.floor(Math.random()* 800),
+      imageWidth: 64,
+      imageHeight: 48,
+      rotation: 0
+    },opts);
+
+    this.init();
+  }
+
+  Martian.prototype.init = function() {
+    this.speedX = this.velocity * Math.cos(this.angle* Math.PI / 180);
+    this.speedY = this.velocity * Math.sin(this.angle* Math.PI / 180);
+  }
+
+  Martian.prototype.move = function() {  
+    var gameWidth = document.body.clientWidth;
+    var gameHeight = document.body.clientHeight;    
+
+    var offTheScreen = false; 
+    if(this.originY + this.imageHeight >= gameHeight) this.speedY = -this.speedY;
+    if(this.originX + this.imageWidth < 0) offTheScreen = true;
+    if(this.originY <= 0) this.speedY = -this.speedY;
+
+    this.originX += this.speedX;
+    this.originY += this.speedY;
+    this.orientation += this.rotation;
+
+    
+    //kill it if we're above the fold
+    return offTheScreen;
+  }
+
+  Martian.prototype.draw = function(context) {
+    this.drawRotatedImage(context, gameImages.martianImage, this.originX, this.originY, this.imageWidth, this.imageHeight, this.orientation);
+  }
+
+  Martian.prototype.drawRotatedImage = function(context, image, x, y, width, height, angle) {  
+    context.save(); 
+    context.translate(x+(width/2), y+(height/2));
+    context.rotate(angle * Math.PI/180);
+    context.drawImage(image, -(width/2), -(height/2), width, height);
+    context.restore(); 
+  }
+
+    /*** ELF CLASS ***/
 
   this.Elf = function(opts) {
     $.extend(this, {
@@ -769,10 +964,10 @@
 
     this.elves = 0;
 
-    this.lives = 5;
+    this.lives = 7;
 
     this.bullets = [];
-    this.maxBullets = 8;
+    this.maxBullets = 10;
     this.canAttack = true;
     this.attackInterval = 100; //in ms
   }
@@ -813,11 +1008,12 @@
   Player.prototype.attack = function(attacking) {
     var _this = this;
     if(attacking && this.canAttack && this.bullets.length < this.maxBullets) {
+      gameSounds.playSound("Shot");
       this.bullets.push( 
         new Bullet(
           Math.max(this.velocityX + 10, 10),
           0,
-          this.originX,
+          this.originX + this.imageHeight/2,
           this.originY
         )
       );
@@ -858,10 +1054,12 @@
   }
 
   Player.prototype.collideWithAsteroid = function() {
+    gameSounds.playSound("Ugh");
     this.lives -= 1;
   }
 
   Player.prototype.collideWithElf = function() {
+    gameSounds.playSound("Elf");
     this.elves += 1;
   }
 
@@ -932,6 +1130,8 @@
       menuElves: [],
       menuNumElves: 5,
       menuNumAsteroids: 10,
+      menuMartians: [],
+      menuNumMartians: 5,
     }
 
     this.gameState = -1;
@@ -1021,47 +1221,7 @@
     this.bindEvents();
   }
 
-  Game.prototype.initializeSound = function() {
-    // if initializeDefaultPlugins returns false, we cannot play sound in this browser
-    if (!createjs.Sound.initializeDefaultPlugins()) {return;}
-    var audioPath = "sounds/";
-    var manifest = [
-      {
-        id:"TitleMusic",
-        src:audioPath+"bgm-bladeRunner.mp3"
-      },
-      {
-        id:"GameMusic",
-        src:audioPath+"bgm-gysahlGreens.mp3"
-      },
-      {
-        id:"BeginDing",
-        src:audioPath+"snd-ding.mp3"
-      },
-      {
-        id:"PauseSound",
-        src:audioPath+"snd-tiku.mp3"
-      },
-      {
-        id:"menuMidgroundSmack",
-        src:audioPath+"snd-ugh.mp3"
-      },
-      {
-        id:"elfAcquired",
-        src:audioPath+"snd-yeah.mp3"
-      },
-      {
-        id:"GameOver",
-        src:audioPath+"snd-gameOver.mp3"
-      }
-    ];
-    createjs.Sound.registerManifest(manifest);
-    
-    // this.currentMusic = createjs.Sound.play("TitleMusic");
-    // this.currentMusic.addEventListener("complete", this.replayCurrentMusic);
-    // this.currentMusic.volume = this.musicVolume;
-  }
-
+  
   Game.prototype.replayCurrentMusic = function() {
     //this.currentMusic.play();
   }
@@ -1078,6 +1238,17 @@
     while(this.menuInfo.menuElves.length < this.menuInfo.menuNumElves) {
       this.menuInfo.menuElves.push(
         new Elf({
+          originX: this.gameWidth +  (Math.random() * 500), 
+          originY: Math.ceil(Math.random() * this.gameHeight),
+          velocity: 0.3 + (Math.random() * 5),
+          angle: 100 + Math.floor(Math.random() * 160)
+        })
+      );
+    }
+
+    while(this.menuInfo.menuMartians.length < this.menuInfo.menuNumMartians) {
+      this.menuInfo.menuMartians.push(
+        new Martian({
           originX: this.gameWidth +  (Math.random() * 500), 
           originY: Math.ceil(Math.random() * this.gameHeight),
           velocity: 0.3 + (Math.random() * 5),
@@ -1106,7 +1277,8 @@
     }
 
     var elvesToKill = [],
-      asteroidsToKill = [];
+      asteroidsToKill = [],
+      martiansToKill = [];
 
     //move the elves, clear the ones we don't need
     for(var i=0; i < this.menuInfo.menuElves.length; i++) {
@@ -1117,6 +1289,17 @@
     }
     for(var i=0; i< elvesToKill.length; i++) {
       this.menuInfo.menuElves.splice(elvesToKill[i],1);
+    }
+
+    //ditto, martians
+    for(var i=0; i < this.menuInfo.menuMartians.length; i++) {
+      var martian = this.menuInfo.menuMartians[i];
+      if( martian.move() ) {
+        martiansToKill.push(i);
+      }
+    }
+    for(var i=0; i< martiansToKill.length; i++) {
+      this.menuInfo.menuMartians.splice(martiansToKill[i],1);
     }
     //same for the asteroids
     for(var i=0; i < this.menuInfo.menuAsteroids.length; i++) {
@@ -1164,7 +1347,7 @@
     this.context.drawImage(gameImages.bkgdImage2, this.menuInfo.menuBackgroundPosition2x, this.menuInfo.menuBackgroundPosition2y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
     this.context.drawImage(gameImages.bkgdImage3, this.menuInfo.menuBackgroundPosition3x, this.menuInfo.menuBackgroundPosition3y, this.menuInfo.menuBackgroundImageWidth, this.menuInfo.menuBackgroundImageHeight);
 
-    //draw the elves and the asteroids
+    //draw the elves and the asteroids and the martians
     for(var i=0; i < this.menuInfo.menuElves.length; i++) {
       var elf = this.menuInfo.menuElves[i];
       elf.draw(this.context);
@@ -1173,13 +1356,17 @@
       var asteroid = this.menuInfo.menuAsteroids[i];
       asteroid.draw(this.context);
     }
+    for(var i=0; i < this.menuInfo.menuMartians.length; i++) {
+      var martian = this.menuInfo.menuMartians[i];
+      martian.draw(this.context);
+    }
 
     //draw the logo
     this.context.drawImage(gameImages.menuLogo, this.menuInfo.logoPositionx, this.menuInfo.logoPositiony, this.menuInfo.logoWidth, this.menuInfo.logoHeight);
 
     this.context.fillStyle = "rgb(255, 255, 255)";
-    this.context.font = "34px Arial";
-    this.context.fillText("- PRESS SPACE TO PLAY -", this.gameWidth/2 - 50, this.gameHeight - 50);
+    this.context.font = "14px Arial";
+    this.context.fillText("- PRESS SPACE TO PLAY -", this.gameWidth/2 - 90, this.gameHeight - 150);
   }
 
   Game.prototype.bindEvents = function() {
@@ -1248,6 +1435,7 @@
     this.moveBackground();
     this.moveAsteroids();
     this.moveElves();
+    this.moveMartians();
   }
 
   Game.prototype.movePlayer = function() {
@@ -1287,10 +1475,22 @@
     }
   }
 
+  Game.prototype.moveMartians = function() {
+    var cullArray = [];
+    for(var i = 0; i < this.martians.length; i++) {
+      var martian = this.martians[i];
+      if(martian.move()) cullArray.push(i);
+    }
+    for(var i = 0; i < cullArray.length; i++) {
+      this.martians.splice(cullArray[i],1)
+    }
+  }
+
   Game.prototype.drawObjects = function() {
     this.drawBackground();
     this.drawAsteroids();
     this.drawElves();
+    this.drawMartians();
     this.drawPlayer();
     this.drawHud();
   }
@@ -1320,6 +1520,13 @@
     }
   }
 
+  Game.prototype.drawMartians = function() {
+    for (var i = 0; i < this.martians.length; i++) {
+      var martian = this.martians[i];
+      martian.draw(this.context);
+    }
+  }
+
   Game.prototype.drawHud = function() {
     var scorePositionX = this.gameWidth - 150,
       scorePositionY = 50,
@@ -1334,9 +1541,9 @@
       lifeHeight = 30;
 
     this.context.fillStyle = "rgb(255, 255, 255)";
-    this.context.font = "14pt helvetica";
-    this.context.fillText("SCORE:" + this.score, scorePositionX, scorePositionY);
-    this.context.fillText("elves:" + this.player.elves, elvesPositionX, elvesPositionY);
+    this.context.font = "12pt helvetica";
+    this.context.fillText("SCORE: " + this.score, scorePositionX, scorePositionY);
+    this.context.fillText("ELVES: " + this.player.elves, elvesPositionX, elvesPositionY);
 
     for( var i = 0; i < this.player.lives; i++) {
       this.context.drawImage(gameImages.playerImages[this.player.playerAvatar], livesOriginX+livesOffsetX, livesOriginY+livesOffsetY,lifeWidth, lifeHeight);
@@ -1346,6 +1553,7 @@
 
   Game.prototype.checkCollisions = function() {
     this.checkAsteroidCollisions();
+    this.checkMartianCollisions();
     this.checkElfCollisions();
   }
 
@@ -1381,6 +1589,33 @@
     }
   }
 
+  Game.prototype.checkMartianCollisions = function() {
+    var martianCullArray = [],
+        bulletCullArray = [];
+    for(var i = 0; i < this.martians.length; i++) {
+      var martian = this.martians[i];
+      if(this.collides(martian, this.player)) {
+        //createjs.Sound.play("menuMidgroundSmack");
+        martianCullArray.push(i);
+        this.player.collideWithAsteroid();
+      }
+      for(var j=0; j< this.player.bullets.length; j++) {
+        var bullet = this.player.bullets[j];
+        //if the bullet collides with the asteroid, we want to do something
+        if(this.collides(martian,bullet)) {
+          martianCullArray.push(i);
+          bulletCullArray.push(j);
+        }
+      }
+    }
+    for(var i = 0; i < martianCullArray.length; i++) {
+      this.martians.splice(martianCullArray[i],1);
+    }
+    for(var i = 0; i < bulletCullArray.length; i++) {
+      this.player.bullets.splice(bulletCullArray[i],1);
+    }
+  }
+
   Game.prototype.checkElfCollisions = function() {
     var cullArray = []
     for(var i = 0; i < this.elves.length; i++) {
@@ -1401,6 +1636,7 @@
     this.maintainBackground();
     this.maintainAsteroids();
     this.maintainElves();
+    this.maintainMartians();
   }
 
   Game.prototype.maintainBackground = function() {
@@ -1428,6 +1664,19 @@
           originY: Math.ceil(Math.random() * this.gameHeight),
           velocity: 0.3 + (Math.random() * 5),
           angle: 150 + Math.floor(Math.random() * 60)
+        })
+      );
+    }
+  }
+
+  Game.prototype.maintainMartians = function() {
+    while(this.martians.length < this.maxMartians) {
+      this.martians.push( 
+        new Martian({
+          originX: this.gameWidth +  (Math.ceil(Math.random() * this.gameWidth)), 
+          originY: Math.ceil(Math.random() * this.gameHeight),
+          velocity: 0.3 + (Math.random() * 5),
+          angle: 170 + Math.floor(Math.random() * 20)
         })
       );
     }
@@ -1486,6 +1735,7 @@
   }
 
   Game.prototype.startGame = function() {
+    gameSounds.playMusic("Music2");
     this.gameState = 1;
     this.asteroids = [];
     this.maxAsteroids = 6;
@@ -1493,7 +1743,7 @@
     this.maxAsteroidVelocityY = 0.4;
 
     this.elves = [];
-    this.maxElves = 5;
+    this.maxElves = 4;
     this.maxElfVelocityX = 23;
     this.maxElfVelocityY = 13;
 
@@ -1519,14 +1769,14 @@
         this.maxElfVelocityY = 78;
 
         this.martians = [];
-        this.maxMartians = 2;
+        this.maxMartians = 3;
         this.maxMartianVelocityX = 3;
         this.maxMartianVelocityY = 12;
         break;
       case 2: //boss level
         this.asteroids = [];
-        this.maxAsteroids = 6;
-        this.maxAsteroidVelocityX = 34;
+        this.maxAsteroids = 7;
+        this.maxAsteroidVelocityX = 44;
         this.maxAsteroidVelocityY = 7;
 
         this.elves = [];
@@ -1535,9 +1785,9 @@
         this.maxElfVelocityY = 118;
 
         this.martians = [];
-        this.maxMartians = 9;
-        this.maxMartianVelocityX = 6;
-        this.maxMartianVelocityY = 1.8;
+        this.maxMartians = 12;
+        this.maxMartianVelocityX = 60;
+        this.maxMartianVelocityY = 18;
         break;
       case 3:
       default:
@@ -1559,7 +1809,6 @@
   }
 
   Game.prototype.loseGame = function() {
-    console.log('you lost')
     var _this = this;
     this.playLoseCinematic(function() {
       _this.getScoreInformation();
@@ -1570,13 +1819,19 @@
     var _this = this;
     console.log('get high score info here then do something');
     setTimeout(function() {
-      _this.gameState = 0;
+      _this.gotoMainMenu();
     }, 3000);
   }
 
   Game.prototype.playWinCinematic = function(callback) {
     var _this = this;
     this.gameState = 4;
+
+    gameSounds.currentMusic.stop();
+    gameSounds.playSound("Win");
+    setTimeout(function() {
+      gameSounds.playSound("Santa");
+    }, 4500);
 
     var width = document.body.clientWidth,
       height = document.body.clientHeight,
@@ -1611,7 +1866,7 @@
       images:imagesArray,
       shouldFadeIn: false,
       shouldFadeOut: false,
-      duration: 6000,
+      duration: 9500, //lol
       completionCallback: callback
     });
 
@@ -1621,7 +1876,8 @@
   Game.prototype.playLoseCinematic = function(callback) {
     var _this = this;
     this.gameState = 4;
-
+    gameSounds.currentMusic.stop();
+    gameSounds.playSound("Lose");
     var width = document.body.clientWidth,
       height = document.body.clientHeight,
       rudolphImages = [gameImages.rudolphImage1, gameImages.rudolphImage2],
@@ -1663,6 +1919,8 @@
   }
 
   Game.prototype.playNextLevelCinematic = function() {
+    gameSounds.currentMusic.stop();
+    gameSounds.playSound("CharacterConfirmed");
     var _this = this;
     this.gameState = 4;
 
@@ -1683,6 +1941,7 @@
       })
     ]
 
+
     this.cinematic = new Cinematic({
       context:this.context,
       images:imagesArray,
@@ -1691,6 +1950,7 @@
       shouldFadeOut: false,
       fadeDuration: 300,
       completionCallback:function(){ 
+        gameSounds.playMusic("Music2");
         _this.gameState = 1; 
       }
     });
@@ -1719,24 +1979,33 @@
       })
     ]
 
+    gameSounds.playSound("CharacterConfirmed");
+
     this.cinematic = new Cinematic({
       context:this.context,
       images:imagesArray,
-      duration: 3500,
+      duration: 4500,
       shouldFadeIn: false,
       shouldFadeOut: false,
       fadeDuration: 300,
       completionCallback:function(){ 
-        _this.gameState = 0; 
+        _this.gotoMainMenu();
       }
     });
 
     this.cinematic.play();
   }
 
+  Game.prototype.gotoMainMenu = function() {
+    gameSounds.playMusic("Music3");
+    this.gameState = 0;
+  }
+
   Game.prototype.playIntroCinematic = function() {
     var _this = this;
     this.gameState = 4;
+    gameSounds.currentMusic.stop();
+    gameSounds.playSound("PressStart");
 
     var width = document.body.clientWidth,
       height = document.body.clientHeight,
@@ -1766,10 +2035,13 @@
       })
     ]
 
+    setTimeout(function() {
+      gameSounds.playSound("Rudolph");
+    }, 1000);
     this.cinematic = new Cinematic({
       context:this.context,
       images:imagesArray,
-      duration: 6000,
+      duration: 8000,
       completionCallback:function(){ 
         _this.playCharacterSelect();
       }
@@ -1785,6 +2057,11 @@
   Game.prototype.playInstructionCinematic = function() {
     var _this = this;
     this.gameState = 4;
+
+    gameSounds.currentMusic.stop();
+    setTimeout(function() {
+      gameSounds.playSound("Rudolph");
+    }, 1000)
 
     var width = document.body.clientWidth,
       height = document.body.clientHeight,
@@ -1819,7 +2096,7 @@
       images:imagesArray,
       shouldFadeIn: false,
       shouldFadeOut: false,
-      duration: 6000,
+      duration: 8000,
       completionCallback:function(){ 
         _this.startGame();
       }
@@ -1856,6 +2133,10 @@
 
   Game.prototype.playCharacterSelect = function() {
     this.gameState = 5;
+    gameSounds.playMusic("Music1");
+  }
+
+  Game.prototype.drawCharacterSelect = function() {
     this.characterSelect.draw();
   }
 
@@ -1873,8 +2154,11 @@
 
   $(document).ready(function() {
     var game = new Game();
+    gameSounds = null;
     gameImages = new Images(function() {
-      game.playNovawareCinematic();
+      gameSounds = new Sounds(function() {
+        game.playNovawareCinematic();
+      });
     });
     game.initialize();
     var loopInterval = setInterval(function() {
@@ -1899,7 +2183,7 @@
           game.playCurrentCinematic();
           break;
         case 5: //character select
-          game.playCharacterSelect();
+          game.drawCharacterSelect();
           break;
       }
     },16);//60 times a second
